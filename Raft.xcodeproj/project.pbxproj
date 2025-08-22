@@ -6,14 +6,74 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3B5CF5522E5843B800192AA3 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 3B5CF5512E5843B800192AA3 /* GoogleMobileAds */; };
+		3BFC64FC2E2C859B00EAAAE9 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BFC64E52E2C84D700EAAAE9 /* UniformTypeIdentifiers.framework */; };
+		3BFC65082E2C859B00EAAAE9 /* RaftActionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3BFC64FB2E2C859B00EAAAE9 /* RaftActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3BFC65062E2C859B00EAAAE9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3BFC64B02E2C5A9E00EAAAE9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3BFC64FA2E2C859B00EAAAE9;
+			remoteInfo = RaftActionExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3BFC64DC2E2C5C9900EAAAE9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3BFC65082E2C859B00EAAAE9 /* RaftActionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		3BFC64B82E2C5A9E00EAAAE9 /* Raft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Raft.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BFC64E52E2C84D700EAAAE9 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		3BFC64FB2E2C859B00EAAAE9 /* RaftActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RaftActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3BFC64DE2E2C831300EAAAE9 /* Exceptions for "Raft" folder in "Raft" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3BFC64B72E2C5A9E00EAAAE9 /* Raft */;
+		};
+		3BFC650C2E2C859B00EAAAE9 /* Exceptions for "RaftActionExtension" folder in "RaftActionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3BFC64FA2E2C859B00EAAAE9 /* RaftActionExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3BFC64BA2E2C5A9E00EAAAE9 /* Raft */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3BFC64DE2E2C831300EAAAE9 /* Exceptions for "Raft" folder in "Raft" target */,
+			);
 			path = Raft;
+			sourceTree = "<group>";
+		};
+		3BFC64FD2E2C859B00EAAAE9 /* RaftActionExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3BFC650C2E2C859B00EAAAE9 /* Exceptions for "RaftActionExtension" folder in "RaftActionExtension" target */,
+			);
+			path = RaftActionExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +83,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B5CF5522E5843B800192AA3 /* GoogleMobileAds in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BFC64F82E2C859B00EAAAE9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BFC64FC2E2C859B00EAAAE9 /* UniformTypeIdentifiers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +102,8 @@
 			isa = PBXGroup;
 			children = (
 				3BFC64BA2E2C5A9E00EAAAE9 /* Raft */,
+				3BFC64FD2E2C859B00EAAAE9 /* RaftActionExtension */,
+				3BFC64E42E2C84D700EAAAE9 /* Frameworks */,
 				3BFC64B92E2C5A9E00EAAAE9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +112,17 @@
 			isa = PBXGroup;
 			children = (
 				3BFC64B82E2C5A9E00EAAAE9 /* Raft.app */,
+				3BFC64FB2E2C859B00EAAAE9 /* RaftActionExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3BFC64E42E2C84D700EAAAE9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3BFC64E52E2C84D700EAAAE9 /* UniformTypeIdentifiers.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,20 +135,45 @@
 				3BFC64B42E2C5A9E00EAAAE9 /* Sources */,
 				3BFC64B52E2C5A9E00EAAAE9 /* Frameworks */,
 				3BFC64B62E2C5A9E00EAAAE9 /* Resources */,
+				3BFC64DC2E2C5C9900EAAAE9 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3BFC65072E2C859B00EAAAE9 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				3BFC64BA2E2C5A9E00EAAAE9 /* Raft */,
 			);
 			name = Raft;
 			packageProductDependencies = (
+				3B5CF5512E5843B800192AA3 /* GoogleMobileAds */,
 			);
 			productName = Raft;
 			productReference = 3BFC64B82E2C5A9E00EAAAE9 /* Raft.app */;
 			productType = "com.apple.product-type.application";
+		};
+		3BFC64FA2E2C859B00EAAAE9 /* RaftActionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BFC65092E2C859B00EAAAE9 /* Build configuration list for PBXNativeTarget "RaftActionExtension" */;
+			buildPhases = (
+				3BFC64F72E2C859B00EAAAE9 /* Sources */,
+				3BFC64F82E2C859B00EAAAE9 /* Frameworks */,
+				3BFC64F92E2C859B00EAAAE9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3BFC64FD2E2C859B00EAAAE9 /* RaftActionExtension */,
+			);
+			name = RaftActionExtension;
+			packageProductDependencies = (
+			);
+			productName = RaftActionExtension;
+			productReference = 3BFC64FB2E2C859B00EAAAE9 /* RaftActionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -83,6 +188,9 @@
 					3BFC64B72E2C5A9E00EAAAE9 = {
 						CreatedOnToolsVersion = 16.1;
 					};
+					3BFC64FA2E2C859B00EAAAE9 = {
+						CreatedOnToolsVersion = 16.1;
+					};
 				};
 			};
 			buildConfigurationList = 3BFC64B32E2C5A9E00EAAAE9 /* Build configuration list for PBXProject "Raft" */;
@@ -94,18 +202,29 @@
 			);
 			mainGroup = 3BFC64AF2E2C5A9E00EAAAE9;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3B5CF50B2E583FAD00192AA3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3BFC64B92E2C5A9E00EAAAE9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				3BFC64B72E2C5A9E00EAAAE9 /* Raft */,
+				3BFC64FA2E2C859B00EAAAE9 /* RaftActionExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3BFC64B62E2C5A9E00EAAAE9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BFC64F92E2C859B00EAAAE9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +241,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3BFC64F72E2C859B00EAAAE9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3BFC65072E2C859B00EAAAE9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3BFC64FA2E2C859B00EAAAE9 /* RaftActionExtension */;
+			targetProxy = 3BFC65062E2C859B00EAAAE9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3BFC64C42E2C5AA100EAAAE9 /* Debug */ = {
@@ -255,11 +389,13 @@
 				DEVELOPMENT_TEAM = PV5CR9JD8P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Raft/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -284,11 +420,13 @@
 				DEVELOPMENT_TEAM = PV5CR9JD8P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Raft/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -296,6 +434,58 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.adriangri.Raft;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3BFC650A2E2C859B00EAAAE9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PV5CR9JD8P;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RaftActionExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RaftActionExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adriangri.Raft.RaftActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3BFC650B2E2C859B00EAAAE9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PV5CR9JD8P;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RaftActionExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RaftActionExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adriangri.Raft.RaftActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -323,7 +513,35 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		3BFC65092E2C859B00EAAAE9 /* Build configuration list for PBXNativeTarget "RaftActionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3BFC650A2E2C859B00EAAAE9 /* Debug */,
+				3BFC650B2E2C859B00EAAAE9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3B5CF50B2E583FAD00192AA3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3B5CF5512E5843B800192AA3 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B5CF50B2E583FAD00192AA3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3BFC64B02E2C5A9E00EAAAE9 /* Project object */;
 }
