@@ -17,24 +17,25 @@ struct CodeRowView: View {
                 Text(codeInfo.code)
                     .font(.title2)
                     .bold()
+                    .foregroundColor(.appAccent)
 
                 if codeInfo.has_description {
                     Text(codeInfo.description)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.appAccent)
                 } else {
                     Text("Discount amount unknown")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.appPrimary)
                         .italic()
                 }
 
                 if codeInfo.has_conditions {
                     Text(codeInfo.conditions)
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.appPrimary)
                 } else {
                     Text("Conditions not available")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.appPrimary)
                         .italic()
                 }
             }
@@ -46,6 +47,7 @@ struct CodeRowView: View {
                     onCopyCode(codeInfo.code)
                 }
                 .font(.caption)
+                .foregroundColor(.appSurface)
             }
         }
         .padding(.vertical, 4)

@@ -23,7 +23,8 @@ struct ContentView: View {
                     searchView
                 }
             }
-            .navigationTitle("Raft")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.appBackground.ignoresSafeArea(.all))
             .onAppear {
                 if appState.isMobileAdsStarted {
                     viewModel.setMobileAdsStarted(true)
@@ -58,6 +59,7 @@ struct ContentView: View {
     private func codesView(for domain: String) -> some View {
         Text("Discount Codes for \(domain)")
             .font(.headline)
+            .foregroundColor(.appAccent)
             .padding()
 
         if viewModel.isLoading {
@@ -66,16 +68,17 @@ struct ContentView: View {
         } else if let errorMessage = viewModel.errorMessage {
             VStack {
                 Text("Error: \(errorMessage)")
-                    .foregroundColor(.red)
+                    .foregroundColor(.appAccent)
                     .padding()
                 Button("Try Again") {
                     viewModel.fetchCodes(for: domain)
                 }
+                .foregroundColor(.white)
                 .padding()
             }
         } else if viewModel.codes.isEmpty {
             Text("No codes found")
-                .foregroundColor(.secondary)
+                .foregroundColor(.appPrimary)
                 .padding()
         } else {
             List(viewModel.codes) { code in
@@ -83,14 +86,15 @@ struct ContentView: View {
                     viewModel.copyCode(codeString)
                 }
             }
+            .scrollContentBackground(.hidden)
         }
     }
     
     private var searchView: some View {
-        VStack {
+        VStack(spacing: 15) {
             Text("Enter a website to find discount codes")
                 .font(.headline)
-                .padding(.bottom, 8)
+                .foregroundColor(.appAccent)
 
             TextField("example.com", text: $manualDomain)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -100,7 +104,11 @@ struct ContentView: View {
             Button("Find Codes") {
                 appState.domainFromDeepLink = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
             }
-            .padding(.top, 10)
+            .foregroundColor(.appSurface)
+            .padding(.vertical, 12)
+            .padding(.horizontal, 30)
+            .background(.appAccent)
+            .clipShape(Capsule())
         }
         .padding()
     }

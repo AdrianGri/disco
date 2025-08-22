@@ -17,6 +17,10 @@ class DiscountCodeViewModel: ObservableObject {
     private let service = DiscountCodeService.shared
     private let interstitialAdManager = InterstitialAdManager()
     
+    // MARK: - Debug Settings
+    /// Set to true to disable ads during testing
+    private let isAdsDisabled = true  // Change to false for production
+    
     func setMobileAdsStarted(_ started: Bool) {
         interstitialAdManager.setMobileAdsStarted(started)
     }
@@ -57,6 +61,12 @@ class DiscountCodeViewModel: ObservableObject {
     }
     
     private func showAdIfReady() {
+        // Skip ads during testing if disabled
+        guard !isAdsDisabled else {
+            print("🚫 Ads disabled for testing")
+            return
+        }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             if self.interstitialAdManager.isAdReady {
                 self.interstitialAdManager.showAd()
