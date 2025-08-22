@@ -3,6 +3,18 @@ import GoogleMobileAds
 
 class AppState: ObservableObject {
     @Published var domainFromDeepLink: String? = nil
+    @Published var isMobileAdsStarted = false
+    
+    func startMobileAds() {
+        guard !isMobileAdsStarted else { return }
+        
+        MobileAds.shared.start { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.isMobileAdsStarted = true
+                print("✅ Google Mobile Ads SDK started successfully")
+            }
+        }
+    }
 }
 
 @main
@@ -24,7 +36,7 @@ struct RaftApp: App {
                     }
                 }
                 .onAppear {
-                    MobileAds.shared.start()
+                    appState.startMobileAds()
                 }
         }
     }

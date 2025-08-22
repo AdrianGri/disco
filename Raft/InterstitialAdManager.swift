@@ -17,13 +17,25 @@ class InterstitialAdManager: NSObject, ObservableObject {
     @Published var isLoading = false
     @Published var isAdReady = false
     
+    private var isMobileAdsStarted = false
+    
     override init() {
         super.init()
-        loadAd()
+        // Don't load ad immediately - wait for SDK to be ready
+    }
+    
+    func setMobileAdsStarted(_ started: Bool) {
+        isMobileAdsStarted = started
+        if started && !isLoading && !isAdReady {
+            loadAd()
+        }
     }
     
     func loadAd() {
-        guard !isLoading else { return }
+        guard !isLoading && isMobileAdsStarted else {
+            print("⏳ Cannot load ad: SDK not started or already loading")
+            return
+        }
         
         isLoading = true
         isAdReady = false
