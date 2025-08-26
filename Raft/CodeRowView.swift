@@ -47,7 +47,7 @@ struct CodeRowView: View {
                     onCopyCode(codeInfo.code)
                 }
                 .font(.caption)
-                .foregroundColor(.appSurface)
+                .foregroundColor(.appAccent)
             }
         }
         .padding(.vertical, 4)
