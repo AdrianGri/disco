@@ -1,6 +1,6 @@
 //
 //  ActionViewController.swift
-//  RaftActionExtension
+//  DiscoActionExtension
 //
 //  Created by Adrian Gri on 2025-07-19.
 //
@@ -42,26 +42,26 @@ class ActionViewController: UIViewController {
         view.addSubview(card)
 
         let title = UILabel()
-        title.text = "Raft Discount Finder"
+        title.text = "Disco Discount Finder"
         title.font = .boldSystemFont(ofSize: 20)
         title.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(title)
 
         let subtitle = UILabel()
-        subtitle.text = "Tap below to open Raft and fetch codes"
+        subtitle.text = "Tap below to open Disco and fetch codes"
         subtitle.font = .systemFont(ofSize: 14)
         subtitle.textColor = .secondaryLabel
         subtitle.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(subtitle)
 
         let button = UIButton(type: .system)
-        button.setTitle("Open Raft", for: .normal)
+        button.setTitle("Open Disco", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 8
         button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
-        button.addTarget(self, action: #selector(self.openRaftApp), for: .touchUpInside)
+        button.addTarget(self, action: #selector(self.openDiscoApp), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(button)
 
@@ -92,9 +92,9 @@ class ActionViewController: UIViewController {
         }
     }
 
-    @objc func openRaftApp() {
+    @objc func openDiscoApp() {
         guard let domain = UserDefaults(suiteName: "com.adriangri.disco")?.string(forKey: "lastQueriedDomain"),
-              let deep = URL(string: "raft://showcodes?domain=\(domain)") else {
+              let deep = URL(string: "disco://showcodes?domain=\(domain)") else {
             return
         }
 

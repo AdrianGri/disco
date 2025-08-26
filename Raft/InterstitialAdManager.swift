@@ -1,6 +1,6 @@
 //
 //  InterstitialAdManager.swift
-//  Raft
+//  Disco
 //
 //  Created by Adrian Gri on 2025-08-21.
 //

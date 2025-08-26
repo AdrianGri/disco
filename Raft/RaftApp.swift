@@ -26,7 +26,7 @@ struct RaftApp: App {
             ContentView()
                 .environmentObject(appState)
                 .onOpenURL { url in
-                    if url.scheme == "raft", url.host == "showcodes" {
+                    if url.scheme == "disco", url.host == "showcodes" {
                         print("📦 Deep link triggered: \(url)")
                         if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                            let domain = components.queryItems?.first(where: { $0.name == "domain" })?.value {
