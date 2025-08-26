@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3BFC64B72E2C5A9E00EAAAE9"
-               BuildableName = "Raft.app"
-               BlueprintName = "Raft"
+               BuildableName = "Disco.app"
+               BlueprintName = "Disco"
                ReferencedContainer = "container:Raft.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3BFC64B72E2C5A9E00EAAAE9"
-            BuildableName = "Raft.app"
-            BlueprintName = "Raft"
+            BuildableName = "Disco.app"
+            BlueprintName = "Disco"
             ReferencedContainer = "container:Raft.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3BFC64B72E2C5A9E00EAAAE9"
-            BuildableName = "Raft.app"
-            BlueprintName = "Raft"
+            BuildableName = "Disco.app"
+            BlueprintName = "Disco"
             ReferencedContainer = "container:Raft.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

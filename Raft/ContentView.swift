@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-let appGroupID = "group.com.yourcompany.raft"
-
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var viewModel = DiscountCodeViewModel()

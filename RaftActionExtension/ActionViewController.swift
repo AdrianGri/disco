@@ -86,14 +86,14 @@ class ActionViewController: UIViewController {
         print("🔍 Preparing to open app for \(url)")
         let domain = url.host ?? "unknown"
 
-        if let defaults = UserDefaults(suiteName: "group.com.yourcompany.raft") {
+        if let defaults = UserDefaults(suiteName: "com.adriangri.disco") {
             defaults.removeObject(forKey: "discountCodes")
             defaults.set(domain, forKey: "lastQueriedDomain")
         }
     }
 
     @objc func openRaftApp() {
-        guard let domain = UserDefaults(suiteName: "group.com.yourcompany.raft")?.string(forKey: "lastQueriedDomain"),
+        guard let domain = UserDefaults(suiteName: "com.adriangri.disco")?.string(forKey: "lastQueriedDomain"),
               let deep = URL(string: "raft://showcodes?domain=\(domain)") else {
             return
         }
@@ -117,9 +117,5 @@ class ActionViewController: UIViewController {
             responder = r.next
         }
         return false
-    }
-
-    func callGeminiServer(prompt: String, completion: @escaping ([String]) -> Void) {
-        // Use the same FastAPI logic from your Share Extension here
     }
 }
