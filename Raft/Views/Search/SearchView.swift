@@ -35,6 +35,8 @@ struct SearchView: View {
 
         TryButtonsView { domain in
           appState.domainFromDeepLink = domain
+          UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
 
         if !isKeyboardVisible {
