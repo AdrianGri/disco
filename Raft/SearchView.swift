@@ -7,8 +7,9 @@ struct SearchView: View {
 
   var body: some View {
     ZStack {
-      // Invisible background that fills the entire screen to capture taps
-      Color.clear
+      // Background that fills the entire screen
+      Color.appBackground
+        .ignoresSafeArea(.all)
         .contentShape(Rectangle())
         .onTapGesture {
           UIApplication.shared.sendAction(
@@ -21,7 +22,7 @@ struct SearchView: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 150, height: 150)
-            .transition(.move(edge: .top).combined(with: .opacity))
+            .transition(.opacity)
         }
 
         Text("Start saving money\nat your favorite\nstores!")
@@ -29,6 +30,7 @@ struct SearchView: View {
           .fontWeight(.heavy)
           .foregroundColor(.black)
           .frame(maxWidth: .infinity, alignment: .leading)
+          .fixedSize(horizontal: false, vertical: true)
 
         Text("Paste a URL website **below** and let disco find you discounts")
           .font(.custom("Avenir", size: 12))
