@@ -152,7 +152,7 @@ struct SearchView: View {
     .onDisappear {
       removeKeyboardObservers()
     }
-    .animation(.easeInOut(duration: 0.3), value: isKeyboardVisible)
+    .animation(.bouncy(duration: 0.4), value: isKeyboardVisible)
   }
 
   private func setupKeyboardObservers() {
