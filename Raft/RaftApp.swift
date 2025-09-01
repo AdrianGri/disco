@@ -25,6 +25,7 @@ struct RaftApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appState)
+                .font(.custom("Avenir", size: 16))
                 .onOpenURL { url in
                     if url.scheme == "disco", url.host == "showcodes" {
                         print("📦 Deep link triggered: \(url)")

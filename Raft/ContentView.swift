@@ -18,7 +18,7 @@ struct ContentView: View {
                 if let domain = appState.domainFromDeepLink {
                     codesView(for: domain)
                 } else {
-                    searchView
+                    SearchView(manualDomain: $manualDomain)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -86,29 +86,6 @@ struct ContentView: View {
             }
             .scrollContentBackground(.hidden)
         }
-    }
-    
-    private var searchView: some View {
-        VStack(spacing: 15) {
-            Text("Enter a website to find discount codes")
-                .font(.headline)
-                .foregroundColor(.appAccent)
-
-            TextField("example.com", text: $manualDomain)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-                .autocapitalization(.none)
-
-            Button("Find Codes") {
-                appState.domainFromDeepLink = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-            .foregroundColor(.appSurface)
-            .padding(.vertical, 12)
-            .padding(.horizontal, 30)
-            .background(.appAccent)
-            .clipShape(Capsule())
-        }
-        .padding()
     }
 }
 
