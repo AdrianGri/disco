@@ -20,9 +20,10 @@ struct SearchHeaderView: View {
           .aspectRatio(contentMode: .fit)
           .frame(width: 150, height: 150)
           .transition(.opacity)
+          .padding(.bottom, 20)
       }
 
-      Text("Start saving money\nat your favorite\nstores!")
+      Text("Start saving money\nat your favorite stores!")
         .font(.custom("Avenir", size: 32))
         .fontWeight(.heavy)
         .foregroundColor(.black)

@@ -15,7 +15,7 @@ struct HowItWorksView: View {
   ]
 
   var body: some View {
-    VStack(alignment: .leading) {
+      VStack(alignment: .leading, spacing: 0) {
       Text("How it Works:")
         .fontWeight(.semibold)
         .foregroundColor(.black)

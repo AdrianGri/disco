@@ -37,7 +37,9 @@ struct SearchView: View {
           appState.domainFromDeepLink = domain
         }
 
-        if !isKeyboardVisible {
+        if !isKeyboardVisible {  
+          Spacer()
+            
           HowItWorksView()
         }
       }
