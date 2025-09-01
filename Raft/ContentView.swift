@@ -13,15 +13,17 @@ struct ContentView: View {
   @State private var manualDomain: String = ""
 
   var body: some View {
-    VStack {
+    ZStack {
+      // Always show SearchView as the base layer
+      SearchView(manualDomain: $manualDomain)
+      
+      // Show CodesView on top when there's a domain
       if let domain = appState.domainFromDeepLink {
         CodesView(domain: domain, viewModel: viewModel) {
           appState.domainFromDeepLink = nil
           viewModel.clearCodes()
           manualDomain = ""
         }
-      } else {
-        SearchView(manualDomain: $manualDomain)
       }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

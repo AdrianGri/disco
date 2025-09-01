@@ -13,6 +13,7 @@ struct CodesView: View {
   let onClose: () -> Void
 
   @State private var isAnimating = false
+  @State private var slideInOffset: CGFloat = UIScreen.main.bounds.width
 
   private func startStaggeredAnimations() {
     isAnimating = false
@@ -22,6 +23,23 @@ struct CodesView: View {
       withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
         isAnimating = true
       }
+    }
+  }
+
+  private func startSlideInAnimation() {
+    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+      slideInOffset = 0
+    }
+  }
+
+  private func startSlideOutAnimation() {
+    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+      slideInOffset = UIScreen.main.bounds.width
+    }
+    
+    // Call onClose after animation completes
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      onClose()
     }
   }
 
@@ -43,7 +61,7 @@ struct CodesView: View {
 
         Spacer()
 
-        Button(action: onClose) {
+        Button(action: startSlideOutAnimation) {
           Image(systemName: "xmark")
             .font(.title2)
             .foregroundColor(.gray)
@@ -113,6 +131,10 @@ struct CodesView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color.white)
+    .offset(x: slideInOffset)
+    .onAppear {
+      startSlideInAnimation()
+    }
     .overlay(
       VStack {
         Spacer()

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct TryButtonsView: View {
-  @Binding var manualDomain: String
   let onDomainSelect: (String) -> Void
 
   private let domains = ["nike.com", "sephora.com", "zara.com"]
@@ -20,7 +19,6 @@ struct TryButtonsView: View {
 
       ForEach(domains, id: \.self) { domain in
         Button(domain) {
-          manualDomain = domain
           onDomainSelect(domain)
         }
         .padding(.vertical, 5)
@@ -35,7 +33,7 @@ struct TryButtonsView: View {
 }
 
 #Preview {
-  TryButtonsView(manualDomain: .constant("")) { domain in
+  TryButtonsView() { domain in
     print("Selected domain: \(domain)")
   }
 }

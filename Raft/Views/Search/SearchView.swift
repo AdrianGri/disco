@@ -33,7 +33,7 @@ struct SearchView: View {
           performSearch()
         }
 
-        TryButtonsView(manualDomain: $manualDomain) { domain in
+        TryButtonsView() { domain in
           appState.domainFromDeepLink = domain
         }
 
