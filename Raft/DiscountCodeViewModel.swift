@@ -10,75 +10,75 @@ import SwiftUI
 
 @MainActor
 class DiscountCodeViewModel: ObservableObject {
-    @Published var codes: [CodeInfo] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-    
-    private let service = DiscountCodeService.shared
-    private let interstitialAdManager = InterstitialAdManager()
-    
-    // MARK: - Debug Settings
-    /// Set to true to disable ads during testing
-    private let isAdsDisabled = false  // Change to false for production
-    
-    func setMobileAdsStarted(_ started: Bool) {
-        interstitialAdManager.setMobileAdsStarted(started)
+  @Published var codes: [CodeInfo] = []
+  @Published var isLoading = false
+  @Published var errorMessage: String?
+
+  private let service = DiscountCodeService.shared
+  private let interstitialAdManager = InterstitialAdManager()
+
+  // MARK: - Debug Settings
+  /// Set to true to disable ads during testing
+  private let isAdsDisabled = false  // Change to false for production
+
+  func setMobileAdsStarted(_ started: Bool) {
+    interstitialAdManager.setMobileAdsStarted(started)
+  }
+
+  func fetchCodes(for domain: String) {
+    guard !domain.isEmpty else { return }
+
+    isLoading = true
+    errorMessage = nil
+    codes = []
+
+    // Show interstitial ad when loading starts
+    showAdIfReady()
+
+    Task {
+      do {
+        let fetchedCodes = try await service.fetchDiscountCodes(for: domain)
+        codes = fetchedCodes
+        print("✅ Fetched \(fetchedCodes.count) codes for \(domain)")
+      } catch {
+        errorMessage = error.localizedDescription
+        print("❌ Failed to fetch codes: \(error)")
+      }
+
+      isLoading = false
     }
-    
-    func fetchCodes(for domain: String) {
-        guard !domain.isEmpty else { return }
-        
-        isLoading = true
-        errorMessage = nil
-        codes = []
-        
-        // Show interstitial ad when loading starts
-        showAdIfReady()
-        
-        Task {
-            do {
-                let fetchedCodes = try await service.fetchDiscountCodes(for: domain)
-                codes = fetchedCodes
-                print("✅ Fetched \(fetchedCodes.count) codes for \(domain)")
-            } catch {
-                errorMessage = error.localizedDescription
-                print("❌ Failed to fetch codes: \(error)")
-            }
-            
-            isLoading = false
-        }
+  }
+
+  func clearCodes() {
+    codes = []
+    errorMessage = nil
+    isLoading = false
+  }
+
+  func copyCode(_ code: String) {
+    UIPasteboard.general.string = code
+    print("📋 Copied code: \(code)")
+  }
+
+  private func showAdIfReady() {
+    // Skip ads during testing if disabled
+    guard !isAdsDisabled else {
+      print("🚫 Ads disabled for testing")
+      return
     }
-    
-    func clearCodes() {
-        codes = []
-        errorMessage = nil
-        isLoading = false
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      if self.interstitialAdManager.isAdReady {
+        self.interstitialAdManager.showAd()
+      } else {
+        print("📢 Ad not ready, loading new ad for next time")
+        self.interstitialAdManager.loadAd()
+      }
     }
-    
-    func copyCode(_ code: String) {
-        UIPasteboard.general.string = code
-        print("📋 Copied code: \(code)")
-    }
-    
-    private func showAdIfReady() {
-        // Skip ads during testing if disabled
-        guard !isAdsDisabled else {
-            print("🚫 Ads disabled for testing")
-            return
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            if self.interstitialAdManager.isAdReady {
-                self.interstitialAdManager.showAd()
-            } else {
-                print("📢 Ad not ready, loading new ad for next time")
-                self.interstitialAdManager.loadAd()
-            }
-        }
-    }
-    
-    func preloadAd() {
-        // This will only load if SDK is ready
-        interstitialAdManager.loadAd()
-    }
+  }
+
+  func preloadAd() {
+    // This will only load if SDK is ready
+    interstitialAdManager.loadAd()
+  }
 }

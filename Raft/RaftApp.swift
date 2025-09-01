@@ -1,44 +1,45 @@
-import SwiftUI
 import GoogleMobileAds
+import SwiftUI
 
 class AppState: ObservableObject {
-    @Published var domainFromDeepLink: String? = nil
-    @Published var isMobileAdsStarted = false
-    
-    func startMobileAds() {
-        guard !isMobileAdsStarted else { return }
-        
-        MobileAds.shared.start { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.isMobileAdsStarted = true
-                print("✅ Google Mobile Ads SDK started successfully")
-            }
-        }
+  @Published var domainFromDeepLink: String? = nil
+  @Published var isMobileAdsStarted = false
+
+  func startMobileAds() {
+    guard !isMobileAdsStarted else { return }
+
+    MobileAds.shared.start { [weak self] _ in
+      DispatchQueue.main.async {
+        self?.isMobileAdsStarted = true
+        print("✅ Google Mobile Ads SDK started successfully")
+      }
     }
+  }
 }
 
 @main
 struct RaftApp: App {
-    @StateObject private var appState = AppState()
+  @StateObject private var appState = AppState()
 
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environmentObject(appState)
-                .font(.custom("Avenir", size: 16))
-                .onOpenURL { url in
-                    if url.scheme == "disco", url.host == "showcodes" {
-                        print("📦 Deep link triggered: \(url)")
-                        if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                           let domain = components.queryItems?.first(where: { $0.name == "domain" })?.value {
-                            appState.domainFromDeepLink = domain
-                            print("🌐 Extracted domain: \(domain)")
-                        }
-                    }
-                }
-                .onAppear {
-                    appState.startMobileAds()
-                }
+  var body: some Scene {
+    WindowGroup {
+      ContentView()
+        .environmentObject(appState)
+        .font(.custom("Avenir", size: 16))
+        .onOpenURL { url in
+          if url.scheme == "disco", url.host == "showcodes" {
+            print("📦 Deep link triggered: \(url)")
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let domain = components.queryItems?.first(where: { $0.name == "domain" })?.value
+            {
+              appState.domainFromDeepLink = domain
+              print("🌐 Extracted domain: \(domain)")
+            }
+          }
+        }
+        .onAppear {
+          appState.startMobileAds()
         }
     }
+  }
 }
