@@ -36,7 +36,7 @@ struct CodesView: View {
     withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
       slideInOffset = UIScreen.main.bounds.width
     }
-    
+
     // Call onClose after animation completes
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
       onClose()

@@ -16,7 +16,7 @@ struct ContentView: View {
     ZStack {
       // Always show SearchView as the base layer
       SearchView(manualDomain: $manualDomain)
-      
+
       // Show CodesView on top when there's a domain
       if let domain = appState.domainFromDeepLink {
         CodesView(domain: domain, viewModel: viewModel) {
