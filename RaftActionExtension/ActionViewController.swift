@@ -6,9 +6,54 @@
 //
 
 import MobileCoreServices
+import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 
+// MARK: - SwiftUI View
+struct ActionExtensionView: View {
+  let onOpenApp: () -> Void
+
+  var body: some View {
+    VStack(spacing: 20) {
+      Spacer()
+      
+      Image("LogoTransparent")
+        .resizable()
+        .renderingMode(.original)
+        .interpolation(.high)
+        .aspectRatio(contentMode: .fit)
+        .frame(width: 150, height: 150)
+
+        Text("Start saving money!")
+          .font(.custom("Avenir", size: 32))
+          .fontWeight(.bold)
+
+      
+      VStack(spacing: 10) {
+        Text("Tap **below** to open Disco and find discounts")
+          .font(.custom("Avenir", size: 12))
+          .multilineTextAlignment(.center)
+        
+        Button(action: onOpenApp) {
+          Text("Open Disco")
+            .font(.custom("Avenir", size: 18))
+            .fontWeight(.medium)
+            .foregroundColor(.appAccent)
+            .padding()
+            .background(.appPrimary)
+            .cornerRadius(10)
+        }
+      }
+
+      Spacer()
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(.appBackground)
+  }
+}
+
+// MARK: - UIKit Controller
 class ActionViewController: UIViewController {
 
   var storedExtensionContext: NSExtensionContext?
@@ -17,6 +62,11 @@ class ActionViewController: UIViewController {
     super.viewDidLoad()
 
     storedExtensionContext = extensionContext
+    processExtensionContext()
+    setupSwiftUIView()
+  }
+
+  private func processExtensionContext() {
     guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else { return }
 
     for attachment in extensionItem.attachments ?? [] {
@@ -32,57 +82,26 @@ class ActionViewController: UIViewController {
         break
       }
     }
+  }
 
-    view.backgroundColor = UIColor.systemBackground
+  private func setupSwiftUIView() {
+    let swiftUIView = ActionExtensionView(onOpenApp: openDiscoApp)
+    let hostingController = UIHostingController(rootView: swiftUIView)
 
-    let card = UIView()
-    card.backgroundColor = .secondarySystemBackground
-    card.layer.cornerRadius = 12
-    card.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(card)
+    addChild(hostingController)
+    view.addSubview(hostingController.view)
+    hostingController.didMove(toParent: self)
 
-    let title = UILabel()
-    title.text = "Disco Discount Finder"
-    title.font = .boldSystemFont(ofSize: 20)
-    title.translatesAutoresizingMaskIntoConstraints = false
-    card.addSubview(title)
-
-    let subtitle = UILabel()
-    subtitle.text = "Tap below to open Disco and fetch codes"
-    subtitle.font = .systemFont(ofSize: 14)
-    subtitle.textColor = .secondaryLabel
-    subtitle.translatesAutoresizingMaskIntoConstraints = false
-    card.addSubview(subtitle)
-
-    let button = UIButton(type: .system)
-    button.setTitle("Open Disco", for: .normal)
-    button.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
-    button.backgroundColor = .systemBlue
-    button.setTitleColor(.white, for: .normal)
-    button.layer.cornerRadius = 8
-    button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
-    button.addTarget(self, action: #selector(self.openDiscoApp), for: .touchUpInside)
-    button.translatesAutoresizingMaskIntoConstraints = false
-    card.addSubview(button)
-
+    hostingController.view.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      card.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      card.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-      card.widthAnchor.constraint(equalToConstant: 300),
-
-      title.topAnchor.constraint(equalTo: card.topAnchor, constant: 20),
-      title.centerXAnchor.constraint(equalTo: card.centerXAnchor),
-
-      subtitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 8),
-      subtitle.centerXAnchor.constraint(equalTo: card.centerXAnchor),
-
-      button.topAnchor.constraint(equalTo: subtitle.bottomAnchor, constant: 16),
-      button.centerXAnchor.constraint(equalTo: card.centerXAnchor),
-      button.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20),
+      hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+      hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
     ])
   }
 
-  func queryDiscountCodes(for url: URL) {
+  private func queryDiscountCodes(for url: URL) {
     print("🔍 Preparing to open app for \(url)")
     let domain = url.host ?? "unknown"
 
@@ -92,7 +111,7 @@ class ActionViewController: UIViewController {
     }
   }
 
-  @objc func openDiscoApp() {
+  private func openDiscoApp() {
     guard
       let domain = UserDefaults(suiteName: "com.adriangri.disco")?.string(
         forKey: "lastQueriedDomain"),
