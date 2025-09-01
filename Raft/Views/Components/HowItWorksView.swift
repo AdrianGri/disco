@@ -11,16 +11,16 @@ struct HowItWorksView: View {
   private let steps = [
     "Enter a website you want to shop at",
     "Let Disco search for best deals",
-    "Never pay full price again!"
+    "Never pay full price again!",
   ]
-  
+
   var body: some View {
     VStack(alignment: .leading) {
       Text("How it Works:")
         .fontWeight(.semibold)
         .foregroundColor(.black)
         .frame(maxWidth: .infinity, alignment: .leading)
-      
+
       ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
         HStack {
           Text("\(index + 1)")

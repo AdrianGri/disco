@@ -10,14 +10,14 @@ import SwiftUI
 struct TryButtonsView: View {
   @Binding var manualDomain: String
   let onDomainSelect: (String) -> Void
-  
+
   private let domains = ["nike.com", "sephora.com", "zara.com"]
-  
+
   var body: some View {
     HStack {
       Text("Try:")
         .foregroundColor(.gray)
-      
+
       ForEach(domains, id: \.self) { domain in
         Button(domain) {
           manualDomain = domain

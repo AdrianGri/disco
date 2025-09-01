@@ -11,7 +11,7 @@ struct SearchView: View {
   @EnvironmentObject var appState: AppState
   @Binding var manualDomain: String
   @State private var isKeyboardVisible = false
-  
+
   var body: some View {
     ZStack {
       Color.appBackground
@@ -21,22 +21,22 @@ struct SearchView: View {
           UIApplication.shared.sendAction(
             #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
-      
+
       VStack(spacing: 20) {
         SearchHeaderView(isKeyboardVisible: isKeyboardVisible)
-        
+
         SearchInputView(manualDomain: $manualDomain) {
           performSearch()
         }
-        
+
         SearchButtonView {
           performSearch()
         }
-        
+
         TryButtonsView(manualDomain: $manualDomain) { domain in
           appState.domainFromDeepLink = domain
         }
-        
+
         if !isKeyboardVisible {
           HowItWorksView()
         }
@@ -51,14 +51,14 @@ struct SearchView: View {
     }
     .animation(.bouncy(duration: 0.4), value: isKeyboardVisible)
   }
-  
+
   private func performSearch() {
     let trimmedDomain = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
     if !trimmedDomain.isEmpty {
       appState.domainFromDeepLink = trimmedDomain
     }
   }
-  
+
   private func setupKeyboardObservers() {
     NotificationCenter.default.addObserver(
       forName: UIResponder.keyboardWillShowNotification,
@@ -67,7 +67,7 @@ struct SearchView: View {
     ) { _ in
       isKeyboardVisible = true
     }
-    
+
     NotificationCenter.default.addObserver(
       forName: UIResponder.keyboardWillHideNotification,
       object: nil,
@@ -76,7 +76,7 @@ struct SearchView: View {
       isKeyboardVisible = false
     }
   }
-  
+
   private func removeKeyboardObservers() {
     NotificationCenter.default.removeObserver(
       self, name: UIResponder.keyboardWillShowNotification, object: nil)

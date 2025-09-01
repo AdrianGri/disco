@@ -11,14 +11,14 @@ struct SearchInputView: View {
   @Binding var manualDomain: String
   @FocusState private var isTextFieldFocused: Bool
   let onSearch: () -> Void
-  
+
   var body: some View {
     VStack {
       Text("Paste or type a website **below** and let Disco find you discounts")
         .font(.custom("Avenir", size: 12))
         .foregroundColor(.black)
         .frame(maxWidth: .infinity, alignment: .center)
-      
+
       TextField("e.g. amazon.com", text: $manualDomain)
         .textFieldStyle(PlainTextFieldStyle())
         .focused($isTextFieldFocused)

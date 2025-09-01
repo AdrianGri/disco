@@ -9,17 +9,19 @@ import SwiftUI
 
 struct SearchHeaderView: View {
   let isKeyboardVisible: Bool
-  
+
   var body: some View {
     VStack(spacing: 20) {
       if !isKeyboardVisible {
         Image("LogoTransparent")
           .resizable()
+          .renderingMode(.original)
+          .interpolation(.high)
           .aspectRatio(contentMode: .fit)
           .frame(width: 150, height: 150)
           .transition(.opacity)
       }
-      
+
       Text("Start saving money\nat your favorite\nstores!")
         .font(.custom("Avenir", size: 32))
         .fontWeight(.heavy)
