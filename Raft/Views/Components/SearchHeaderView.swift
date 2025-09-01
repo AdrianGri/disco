@@ -20,7 +20,8 @@ struct SearchHeaderView: View {
           .aspectRatio(contentMode: .fit)
           .frame(width: 150, height: 150)
           .transition(.opacity)
-          .padding(.bottom, 20)
+          .padding(.top, 20)
+          .padding(.bottom, 10)
       }
 
       Text("Start saving money\nat your favorite stores!")

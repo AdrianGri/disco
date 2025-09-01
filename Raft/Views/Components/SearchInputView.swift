@@ -27,7 +27,6 @@ struct SearchInputView: View {
         .background(.textFieldBackground)
         .clipShape(Capsule())
         .autocapitalization(.none)
-        .padding(.vertical, 10)
         .contentShape(Rectangle())
     }
     .onTapGesture {
