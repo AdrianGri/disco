@@ -5,6 +5,7 @@
 //  Created by Adrian Gri on 2025-09-01.
 //
 
+import AVKit
 import SwiftUI
 
 struct CodesView: View {
@@ -74,10 +75,15 @@ struct CodesView: View {
       .padding(.top, 20)
       .padding(.bottom, 30)
 
-      if viewModel.isLoading {
+      if viewModel.isLoading || viewModel.codes.isEmpty {
         Spacer()
-        ProgressView("Loading...")
-          .padding()
+        VStack {
+          SimpleLoadingVideoView(videoName: "loading_animation")
+          Text("Loading codes...")
+            .font(.custom("Avenir", size: 16))
+            .foregroundColor(.gray)
+            .padding(.top, 16)
+        }
         Spacer()
       } else if let errorMessage = viewModel.errorMessage {
         Spacer()
