@@ -32,24 +32,32 @@ struct SearchView: View {
           .foregroundColor(.black)
           .frame(maxWidth: .infinity, alignment: .leading)
           .fixedSize(horizontal: false, vertical: true)
+          .allowsHitTesting(false)
 
-        Text("Paste a URL website **below** and let disco find you discounts")
-          .font(.custom("Avenir", size: 12))
-          .foregroundColor(.black)
-          .frame(maxWidth: .infinity, alignment: .center)
+        VStack {
+          Text("Paste a URL website **below** and let disco find you discounts")
+            .font(.custom("Avenir", size: 12))
+            .foregroundColor(.black)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .onTapGesture {
+              isTextFieldFocused = true
+            }
 
-        TextField("e.g. amazon.com", text: $manualDomain)
-          .textFieldStyle(PlainTextFieldStyle())
-          .focused($isTextFieldFocused)
-          .padding()
-          .frame(maxWidth: .infinity)
-          .background(.textFieldBackground)
-          .clipShape(Capsule())
-          .autocapitalization(.none)
-          .keyboardType(.URL)
-          .onTapGesture {
-            isTextFieldFocused = true
-          }
+          TextField("e.g. amazon.com", text: $manualDomain)
+            .textFieldStyle(PlainTextFieldStyle())
+            .focused($isTextFieldFocused)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(.textFieldBackground)
+            .clipShape(Capsule())
+            .autocapitalization(.none)
+            .keyboardType(.URL)
+            .padding(.vertical, 10)  // Extra padding for larger tap area
+            .contentShape(Rectangle())  // Make the entire padded area tappable
+            .onTapGesture {
+              isTextFieldFocused = true
+            }
+        }
 
         Button(action: {
           appState.domainFromDeepLink = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
