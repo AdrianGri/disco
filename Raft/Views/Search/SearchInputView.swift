@@ -24,7 +24,7 @@ struct SearchInputView: View {
         .focused($isTextFieldFocused)
         .padding()
         .frame(maxWidth: .infinity)
-        .background(.textFieldBackground)
+        .background(.grayBackground)
         .clipShape(Capsule())
         .autocapitalization(.none)
         .contentShape(Rectangle())

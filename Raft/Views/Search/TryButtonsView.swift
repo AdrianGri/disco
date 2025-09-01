@@ -23,7 +23,7 @@ struct TryButtonsView: View {
         }
         .padding(.vertical, 5)
         .padding(.horizontal, 10)
-        .background(.textFieldBackground)
+        .background(.grayBackground)
         .clipShape(Capsule())
         .foregroundColor(.black)
       }
