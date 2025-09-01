@@ -4,6 +4,7 @@ struct SearchView: View {
   @EnvironmentObject var appState: AppState
   @Binding var manualDomain: String
   @State private var isKeyboardVisible = false
+  @FocusState private var isTextFieldFocused: Bool
 
   var body: some View {
     ZStack {
@@ -39,12 +40,16 @@ struct SearchView: View {
 
         TextField("e.g. amazon.com", text: $manualDomain)
           .textFieldStyle(PlainTextFieldStyle())
+          .focused($isTextFieldFocused)
           .padding()
           .frame(maxWidth: .infinity)
           .background(.textFieldBackground)
           .clipShape(Capsule())
           .autocapitalization(.none)
           .keyboardType(.URL)
+          .onTapGesture {
+            isTextFieldFocused = true
+          }
 
         Button(action: {
           appState.domainFromDeepLink = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
