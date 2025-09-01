@@ -33,13 +33,13 @@ struct SearchView: View {
           performSearch()
         }
 
-        TryButtonsView() { domain in
+        TryButtonsView { domain in
           appState.domainFromDeepLink = domain
         }
 
-        if !isKeyboardVisible {  
+        if !isKeyboardVisible {
           Spacer()
-            
+
           HowItWorksView()
         }
       }
@@ -55,6 +55,10 @@ struct SearchView: View {
   }
 
   private func performSearch() {
+    // Dismiss keyboard first
+    UIApplication.shared.sendAction(
+      #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+
     let trimmedDomain = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
     if !trimmedDomain.isEmpty {
       appState.domainFromDeepLink = trimmedDomain

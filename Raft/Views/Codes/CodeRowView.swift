@@ -27,16 +27,11 @@ struct CodeRowView: View {
 
           HStack(spacing: 6) {
             Image(systemName: "doc.on.doc")
-              .font(.system(size: 14))
-            Text("Copy Code")
-              .font(.custom("Avenir", size: 14))
+              .font(.system(size: 16))
+            Text("Copy")
+              .font(.custom("Avenir", size: 16))
               .fontWeight(.medium)
           }
-          .foregroundColor(.black)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 10)
-          .background(Color.black.opacity(0.1))
-          .cornerRadius(8)
         }
 
         // Description
