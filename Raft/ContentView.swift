@@ -39,6 +39,7 @@ struct ContentView: View {
             Button("Close") {
               appState.domainFromDeepLink = nil
               viewModel.clearCodes()
+              manualDomain = ""  // Clear the text field when returning to SearchView
             }
           }
         }

@@ -8,7 +8,6 @@ struct SearchView: View {
 
   var body: some View {
     ZStack {
-      // Background that fills the entire screen
       Color.appBackground
         .ignoresSafeArea(.all)
         .contentShape(Rectangle())
@@ -35,13 +34,10 @@ struct SearchView: View {
           .allowsHitTesting(false)
 
         VStack {
-          Text("Paste a URL website **below** and let disco find you discounts")
+          Text("Paste or type a website **below** and let Disco find you discounts")
             .font(.custom("Avenir", size: 12))
             .foregroundColor(.black)
             .frame(maxWidth: .infinity, alignment: .center)
-            .onTapGesture {
-              isTextFieldFocused = true
-            }
 
           TextField("e.g. amazon.com", text: $manualDomain)
             .textFieldStyle(PlainTextFieldStyle())
@@ -51,16 +47,18 @@ struct SearchView: View {
             .background(.textFieldBackground)
             .clipShape(Capsule())
             .autocapitalization(.none)
-            .keyboardType(.URL)
             .padding(.vertical, 10)  // Extra padding for larger tap area
             .contentShape(Rectangle())  // Make the entire padded area tappable
-            .onTapGesture {
-              isTextFieldFocused = true
-            }
+        }
+        .onTapGesture {
+          isTextFieldFocused = true
         }
 
         Button(action: {
-          appState.domainFromDeepLink = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
+          let trimmedDomain = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
+          if !trimmedDomain.isEmpty {
+            appState.domainFromDeepLink = trimmedDomain
+          }
         }) {
           HStack {
             Image(systemName: "magnifyingglass")
