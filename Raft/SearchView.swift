@@ -71,24 +71,33 @@ struct SearchView: View {
           Text("Try:")
             .foregroundColor(.gray)
 
-          Button("nike.com") { manualDomain = "nike.com" }
-            .padding(.vertical, 5)
-            .padding(.horizontal, 10)
-            .background(.textFieldBackground)
-            .clipShape(Capsule())
-            .foregroundColor(.black)
-          Button("sephora.com") { manualDomain = "sephora.com" }
-            .padding(.vertical, 5)
-            .padding(.horizontal, 10)
-            .background(.textFieldBackground)
-            .clipShape(Capsule())
-            .foregroundColor(.black)
-          Button("zara.com") { manualDomain = "zara.com" }
-            .padding(.vertical, 5)
-            .padding(.horizontal, 10)
-            .background(.textFieldBackground)
-            .clipShape(Capsule())
-            .foregroundColor(.black)
+          Button("nike.com") {
+            manualDomain = "nike.com"
+            appState.domainFromDeepLink = "nike.com"
+          }
+          .padding(.vertical, 5)
+          .padding(.horizontal, 10)
+          .background(.textFieldBackground)
+          .clipShape(Capsule())
+          .foregroundColor(.black)
+          Button("sephora.com") {
+            manualDomain = "sephora.com"
+            appState.domainFromDeepLink = "sephora.com"
+          }
+          .padding(.vertical, 5)
+          .padding(.horizontal, 10)
+          .background(.textFieldBackground)
+          .clipShape(Capsule())
+          .foregroundColor(.black)
+          Button("zara.com") {
+            manualDomain = "zara.com"
+            appState.domainFromDeepLink = "zara.com"
+          }
+          .padding(.vertical, 5)
+          .padding(.horizontal, 10)
+          .background(.textFieldBackground)
+          .clipShape(Capsule())
+          .foregroundColor(.black)
         }
         .font(.custom("Avenir", size: 14))
 
