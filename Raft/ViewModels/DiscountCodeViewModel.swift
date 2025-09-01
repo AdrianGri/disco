@@ -13,13 +13,14 @@ class DiscountCodeViewModel: ObservableObject {
   @Published var codes: [CodeInfo] = []
   @Published var isLoading = false
   @Published var errorMessage: String?
+  @Published var showCopyToast = false
 
   private let service = DiscountCodeService.shared
   private let interstitialAdManager = InterstitialAdManager()
 
   // MARK: - Debug Settings
   /// Set to true to disable ads during testing
-  private let isAdsDisabled = false  // Change to false for production
+  private let isAdsDisabled = true  // Change to false for production
 
   func setMobileAdsStarted(_ started: Bool) {
     interstitialAdManager.setMobileAdsStarted(started)
@@ -58,6 +59,14 @@ class DiscountCodeViewModel: ObservableObject {
   func copyCode(_ code: String) {
     UIPasteboard.general.string = code
     print("📋 Copied code: \(code)")
+
+    // Show toast notification
+    showCopyToast = true
+
+    // Hide toast after 2 seconds
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+      self.showCopyToast = false
+    }
   }
 
   private func showAdIfReady() {

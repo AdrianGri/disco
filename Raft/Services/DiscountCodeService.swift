@@ -7,23 +7,6 @@
 
 import Foundation
 
-struct PromptRequest: Codable {
-  let prompt: String
-}
-
-struct CodeInfo: Codable, Identifiable {
-  let id = UUID()
-  let code: String
-  let description: String
-  let conditions: String
-  let has_description: Bool
-  let has_conditions: Bool
-}
-
-struct DetailedCodesResponse: Codable {
-  let codes: [CodeInfo]
-}
-
 class DiscountCodeService {
   static let shared = DiscountCodeService()
 
@@ -55,22 +38,5 @@ class DiscountCodeService {
 
     let decodedResponse = try JSONDecoder().decode(DetailedCodesResponse.self, from: data)
     return decodedResponse.codes
-  }
-}
-
-enum ServiceError: LocalizedError {
-  case invalidURL
-  case invalidResponse
-  case decodingError
-
-  var errorDescription: String? {
-    switch self {
-    case .invalidURL:
-      return "Invalid URL"
-    case .invalidResponse:
-      return "Invalid response from server"
-    case .decodingError:
-      return "Failed to decode response"
-    }
   }
 }
