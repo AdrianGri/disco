@@ -16,7 +16,6 @@ struct SearchHeaderView: View {
       if !isKeyboardVisible {
         // Logo centered with menu on the right
         ZStack {
-          // Centered logo
           Image("LogoTransparent")
             .resizable()
             .renderingMode(.original)
@@ -25,7 +24,6 @@ struct SearchHeaderView: View {
             .frame(width: 150, height: 150)
             .transition(.opacity)
 
-          // Menu button aligned to trailing edge
           HStack {
             Spacer()
 
@@ -64,7 +62,10 @@ struct SearchHeaderView: View {
 
   private func openPrivacyPolicy() {
     // Add your privacy policy URL here
-    if let url = URL(string: "https://docs.google.com/document/d/e/2PACX-1vS4Z1X3-bk94k_YfG8nHQZWkVV23Qq3lEEaYbGyamlJd1Bmv2ktrOg55JZqFqZEf09aSF3egRoPJdf7/pub") {
+    if let url = URL(
+      string:
+        "https://docs.google.com/document/d/e/2PACX-1vS4Z1X3-bk94k_YfG8nHQZWkVV23Qq3lEEaYbGyamlJd1Bmv2ktrOg55JZqFqZEf09aSF3egRoPJdf7/pub"
+    ) {
       UIApplication.shared.open(url)
     }
   }
