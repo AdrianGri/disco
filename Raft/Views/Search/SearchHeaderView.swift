@@ -40,6 +40,8 @@ struct SearchHeaderView: View {
                 Image(systemName: "line.3.horizontal")
                   .font(.title2)
                   .foregroundColor(.black)
+                  .frame(minWidth: 50, minHeight: 50)
+                  .contentShape(Rectangle())
               }
 
               Spacer()
