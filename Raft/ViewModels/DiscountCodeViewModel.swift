@@ -18,9 +18,20 @@ class DiscountCodeViewModel: ObservableObject {
   private let service = DiscountCodeService.shared
   private let interstitialAdManager = InterstitialAdManager()
 
+  // State machine for loading process
+  private enum LoadingState {
+    case idle
+    case loadingBoth  // Both API and timer running
+    case waitingForTimer  // API done, waiting for 2-second timer
+    case waitingForAPI  // Timer done (ad shown), waiting for API
+    case complete  // Both API and timer completed
+  }
+
+  @Published private var loadingState: LoadingState = .idle
+
   // MARK: - Debug Settings
   /// Set to true to disable ads during testing
-  private let isAdsDisabled = true  // Change to false for production
+  private let isAdsDisabled = false  // Change to false for production
 
   func setMobileAdsStarted(_ started: Bool) {
     interstitialAdManager.setMobileAdsStarted(started)
@@ -29,13 +40,18 @@ class DiscountCodeViewModel: ObservableObject {
   func fetchCodes(for domain: String) {
     guard !domain.isEmpty else { return }
 
+    // Initialize loading state
+    loadingState = .loadingBoth
     isLoading = true
     errorMessage = nil
     codes = []
 
-    // Show interstitial ad when loading starts
-    showAdIfReady()
+    // Start 1.5-second timer for minimum loading time
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+      self.handleTimerCompleted()
+    }
 
+    // Start API call
     Task {
       do {
         let fetchedCodes = try await service.fetchDiscountCodes(for: domain)
@@ -46,14 +62,58 @@ class DiscountCodeViewModel: ObservableObject {
         print("❌ Failed to fetch codes: \(error)")
       }
 
-      isLoading = false
+      handleAPICompleted()
     }
+  }
+
+  private func handleTimerCompleted() {
+    // Always show ad when timer completes, regardless of API status
+    showAdIfReady()
+    
+    switch loadingState {
+    case .loadingBoth:
+      // API still running, timer done - wait for API
+      loadingState = .waitingForAPI
+    case .waitingForTimer:
+      // API already done, timer just finished - complete after delay
+      loadingState = .complete
+      finishLoadingAfterDelay()
+    default:
+      break
+    }
+  }
+
+  private func handleAPICompleted() {
+    switch loadingState {
+    case .loadingBoth:
+      // Timer still running, API done - wait for timer (ad will show then)
+      loadingState = .waitingForTimer
+    case .waitingForAPI:
+      // Timer already done (ad already shown), API just finished - complete after delay
+      loadingState = .complete
+      finishLoadingAfterDelay()
+    default:
+      break
+    }
+  }
+
+  private func finishLoadingAfterDelay() {
+    // Wait a bit for the ad to display before showing codes
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+      self.finishLoading()
+    }
+  }
+
+  private func finishLoading() {
+    isLoading = false
+    loadingState = .idle
   }
 
   func clearCodes() {
     codes = []
     errorMessage = nil
     isLoading = false
+    loadingState = .idle
   }
 
   func copyCode(_ code: String) {
