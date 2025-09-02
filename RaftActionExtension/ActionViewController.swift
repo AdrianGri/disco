@@ -17,7 +17,7 @@ struct ActionExtensionView: View {
   var body: some View {
     VStack(spacing: 20) {
       Spacer()
-      
+
       Image("LogoTransparent")
         .resizable()
         .renderingMode(.original)
@@ -25,20 +25,19 @@ struct ActionExtensionView: View {
         .aspectRatio(contentMode: .fit)
         .frame(width: 150, height: 150)
 
-        Text("Start saving money!")
-          .font(.custom("Avenir", size: 32))
-          .fontWeight(.bold)
+      Text("Start saving money!")
+        .font(.custom("Avenir", size: 32))
+        .fontWeight(.bold)
 
-      
       VStack(spacing: 10) {
-        Text("Tap **below** to open Disco and find discounts")
+        Text("Tap **below** to open Disco and find discounts for this website")
           .font(.custom("Avenir", size: 12))
           .multilineTextAlignment(.center)
-        
+
         Button(action: onOpenApp) {
           Text("Open Disco")
             .font(.custom("Avenir", size: 18))
-            .fontWeight(.medium)
+            .fontWeight(.bold)
             .foregroundColor(.appAccent)
             .padding()
             .background(.appPrimary)
