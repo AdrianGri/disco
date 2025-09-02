@@ -11,23 +11,27 @@ struct ContentView: View {
   @EnvironmentObject var appState: AppState
   @StateObject private var viewModel = DiscountCodeViewModel()
   @State private var manualDomain: String = ""
+  @State private var navigationPath = NavigationPath()
 
   var body: some View {
-    ZStack {
-      // Always show SearchView as the base layer
+    NavigationStack(path: $navigationPath) {
       SearchView(manualDomain: $manualDomain)
-
-      // Show CodesView on top when there's a domain
-      if let domain = appState.domainFromDeepLink {
-        CodesView(domain: domain, viewModel: viewModel) {
-          appState.domainFromDeepLink = nil
-          viewModel.clearCodes()
-          manualDomain = ""
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.appBackground.ignoresSafeArea(.all))
+        .navigationDestination(for: String.self) { domain in
+          CodesView(domain: domain, viewModel: viewModel) {
+            appState.domainFromDeepLink = nil
+            viewModel.clearCodes()
+            manualDomain = ""
+          }
         }
-      }
+        .onChange(of: appState.domainFromDeepLink) { domain in
+          if let domain = domain {
+            navigationPath.append(domain)
+            viewModel.fetchCodes(for: domain)
+          }
+        }
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.appBackground.ignoresSafeArea(.all))
     .onAppear {
       if appState.isMobileAdsStarted {
         viewModel.setMobileAdsStarted(true)
@@ -36,22 +40,6 @@ struct ContentView: View {
     .onChange(of: appState.isMobileAdsStarted) { isStarted in
       if isStarted {
         viewModel.setMobileAdsStarted(true)
-      }
-    }
-    .toolbar {
-      if !viewModel.codes.isEmpty {
-        ToolbarItem(placement: .navigationBarTrailing) {
-          Button("Close") {
-            appState.domainFromDeepLink = nil
-            viewModel.clearCodes()
-            manualDomain = ""  // Clear the text field when returning to SearchView
-          }
-        }
-      }
-    }
-    .onChange(of: appState.domainFromDeepLink) { domain in
-      if let domain = domain {
-        viewModel.fetchCodes(for: domain)
       }
     }
   }
