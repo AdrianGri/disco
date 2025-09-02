@@ -24,10 +24,10 @@ class VideoPreloader: ObservableObject {
 
     print("🚀 Starting preload for: \(videoName)")
 
-    guard let path = Bundle.main.path(forResource: videoName, ofType: "mov"),
+    guard let path = Bundle.main.path(forResource: videoName, ofType: "mp4"),
       FileManager.default.fileExists(atPath: path)
     else {
-      print("❌ Could not preload video: \(videoName).mov")
+      print("❌ Could not preload video: \(videoName).mp4")
       return
     }
 
@@ -217,10 +217,10 @@ struct SimpleLoadingVideoView: View {
 
     // Fallback to regular loading if preload failed
     print("📥 Falling back to regular loading")
-    guard let path = Bundle.main.path(forResource: videoName, ofType: "mov"),
+    guard let path = Bundle.main.path(forResource: videoName, ofType: "mp4"),
       FileManager.default.fileExists(atPath: path)
     else {
-      print("❌ Video file not found: \(videoName).mov")
+      print("❌ Video file not found: \(videoName).mp4")
       return
     }
 
