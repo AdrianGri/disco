@@ -12,9 +12,9 @@ struct CodesView: View {
   let domain: String
   @ObservedObject var viewModel: DiscountCodeViewModel
   let onClose: () -> Void
+  @Environment(\.dismiss) private var dismiss
 
   @State private var isAnimating = false
-  @State private var slideInOffset: CGFloat = UIScreen.main.bounds.width
 
   private func startStaggeredAnimations() {
     isAnimating = false
@@ -27,19 +27,12 @@ struct CodesView: View {
     }
   }
 
-  private func startSlideInAnimation() {
-    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-      slideInOffset = 0
-    }
-  }
+  private func handleClose() {
+    // First dismiss the navigation
+    dismiss()
 
-  private func startSlideOutAnimation() {
-    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-      slideInOffset = UIScreen.main.bounds.width
-    }
-
-    // Call onClose after animation completes
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+    // Then clear the state after navigation animation completes
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
       onClose()
     }
   }
@@ -62,7 +55,7 @@ struct CodesView: View {
 
         Spacer()
 
-        Button(action: startSlideOutAnimation) {
+        Button(action: handleClose) {
           Image(systemName: "xmark")
             .font(.title2)
             .foregroundColor(.gray)
@@ -137,9 +130,12 @@ struct CodesView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(.appBackground)
-    .offset(x: slideInOffset)
+    .navigationBarHidden(true)
     .onAppear {
-      startSlideInAnimation()
+      // Trigger animations when view first appears
+      if !viewModel.codes.isEmpty && !isAnimating {
+        startStaggeredAnimations()
+      }
     }
     .overlay(
       VStack {
