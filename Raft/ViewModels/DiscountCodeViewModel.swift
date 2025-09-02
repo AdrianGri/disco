@@ -31,7 +31,7 @@ class DiscountCodeViewModel: ObservableObject {
 
   // MARK: - Debug Settings
   /// Set to true to disable ads during testing
-  private let isAdsDisabled = false  // Change to false for production
+  private let isAdsDisabled = true  // Change to false for production
 
   func setMobileAdsStarted(_ started: Bool) {
     interstitialAdManager.setMobileAdsStarted(started)

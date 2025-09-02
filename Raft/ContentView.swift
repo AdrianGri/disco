@@ -33,10 +33,6 @@ struct ContentView: View {
         }
     }
     .onAppear {
-      // Preload video as early as possible when ContentView appears
-      VideoPreloader.shared.preloadVideo(named: "loading_animation")
-    }
-    .onAppear {
       if appState.isMobileAdsStarted {
         viewModel.setMobileAdsStarted(true)
       }
