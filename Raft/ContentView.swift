@@ -29,6 +29,10 @@ struct ContentView: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color.appBackground.ignoresSafeArea(.all))
     .onAppear {
+      // Preload video as early as possible when ContentView appears
+      VideoPreloader.shared.preloadVideo(named: "loading_animation")
+    }
+    .onAppear {
       if appState.isMobileAdsStarted {
         viewModel.setMobileAdsStarted(true)
       }

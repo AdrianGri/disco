@@ -136,7 +136,7 @@ struct CodesView: View {
       }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.white)
+    .background(.appBackground)
     .offset(x: slideInOffset)
     .onAppear {
       startSlideInAnimation()
