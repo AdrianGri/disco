@@ -28,6 +28,7 @@ struct SearchInputView: View {
         .clipShape(Capsule())
         .autocapitalization(.none)
         .contentShape(Rectangle())
+        .autocorrectionDisabled(true)
     }
     .onTapGesture {
       isTextFieldFocused = true

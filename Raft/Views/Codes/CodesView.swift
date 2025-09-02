@@ -15,6 +15,14 @@ struct CodesView: View {
   @Environment(\.dismiss) private var dismiss
 
   @State private var isAnimating = false
+  @State private var currentLoadingTextIndex = 0
+  @State private var loadingTextTimer: Timer?
+
+  private let loadingPhrases = [
+    "Finding you the best deals...",
+    "Searching for discounts...",
+    "Looking for sales...",
+  ]
 
   private func startStaggeredAnimations() {
     isAnimating = false
@@ -25,6 +33,23 @@ struct CodesView: View {
         isAnimating = true
       }
     }
+  }
+
+  private func startLoadingTextCycle() {
+    // Start on a random index
+    currentLoadingTextIndex = Int.random(in: 0..<loadingPhrases.count)
+
+    // Start cycling every 5 seconds
+    loadingTextTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+      withAnimation(.easeInOut(duration: 0.3)) {
+        currentLoadingTextIndex = (currentLoadingTextIndex + 1) % loadingPhrases.count
+      }
+    }
+  }
+
+  private func stopLoadingTextCycle() {
+    loadingTextTimer?.invalidate()
+    loadingTextTimer = nil
   }
 
   private func handleClose() {
@@ -66,16 +91,16 @@ struct CodesView: View {
       }
       .padding(.horizontal, 20)
       .padding(.top, 20)
-      .padding(.bottom, 30)
+      .padding(.bottom, viewModel.isLoading ? 0 : 30)
 
-      if viewModel.isLoading || viewModel.codes.isEmpty {
+      if viewModel.isLoading {
         Spacer()
         VStack {
           SimpleLoadingVideoView(videoName: "loading_animation")
-          Text("Loading codes...")
-            .font(.custom("Avenir", size: 16))
-            .foregroundColor(.gray)
+          Text(loadingPhrases[currentLoadingTextIndex])
+            .font(.custom("Avenir", size: 20))
             .padding(.top, 16)
+            .animation(.easeInOut(duration: 0.3), value: currentLoadingTextIndex)
         }
         Spacer()
       } else if let errorMessage = viewModel.errorMessage {
@@ -94,7 +119,7 @@ struct CodesView: View {
       } else if viewModel.codes.isEmpty {
         Spacer()
         Text("No codes found")
-          .foregroundColor(.appPrimary)
+          .font(.custom("Avenir", size: 20))
           .padding()
         Spacer()
       } else {
@@ -135,6 +160,22 @@ struct CodesView: View {
       // Trigger animations when view first appears
       if !viewModel.codes.isEmpty && !isAnimating {
         startStaggeredAnimations()
+      }
+
+      // Start loading text cycle if currently loading
+      if viewModel.isLoading {
+        startLoadingTextCycle()
+      }
+    }
+    .onDisappear {
+      // Clean up timer when view disappears
+      stopLoadingTextCycle()
+    }
+    .onChange(of: viewModel.isLoading) { isLoading in
+      if isLoading {
+        startLoadingTextCycle()
+      } else {
+        stopLoadingTextCycle()
       }
     }
     .overlay(
