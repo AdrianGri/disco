@@ -14,8 +14,7 @@ struct SearchInputView: View {
 
   var body: some View {
     VStack {
-      Text("Paste or type a website **below** and let Disco find you discounts")
-        .font(.custom("Avenir", size: 12))
+      Text("Paste or type a website **below** to find discounts")
         .foregroundColor(.black)
         .frame(maxWidth: .infinity, alignment: .center)
 

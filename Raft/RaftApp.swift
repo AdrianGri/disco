@@ -1,9 +1,11 @@
 import GoogleMobileAds
 import SwiftUI
 
+@MainActor
 class AppState: ObservableObject {
   @Published var domainFromDeepLink: String? = nil
   @Published var isMobileAdsStarted = false
+  let purchaseManager = InAppPurchaseManager()
 
   func startMobileAds() {
     guard !isMobileAdsStarted else { return }

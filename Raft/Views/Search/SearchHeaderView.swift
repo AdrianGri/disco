@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SearchHeaderView: View {
   let isKeyboardVisible: Bool
+  let onUpgradePressed: () -> Void
+  @ObservedObject var purchaseManager: InAppPurchaseManager
   @State private var showingMenu = false
 
   var body: some View {
@@ -29,6 +31,34 @@ struct SearchHeaderView: View {
 
             VStack {
               Menu {
+                // Premium status or upgrade option
+                if purchaseManager.isPremium {
+                  // Show premium status (non-interactive)
+                  Label {
+                    Text("Premium Active")
+                      .foregroundColor(.primary)
+                  } icon: {
+                    Image(systemName: "crown.fill")
+                      .foregroundColor(.yellow)
+                  }
+                  
+                  Divider()
+                } else {
+                  // Show upgrade option
+                  Button {
+                    onUpgradePressed()
+                  } label: {
+                    Label {
+                      Text("Upgrade to Premium")
+                    } icon: {
+                      Image(systemName: "crown.fill")
+                        .foregroundColor(.blue)
+                    }
+                  }
+                  
+                  Divider()
+                }
+                
                 Button("Privacy Policy") {
                   openPrivacyPolicy()
                 }
@@ -36,6 +66,14 @@ struct SearchHeaderView: View {
                 Button("Support") {
                   openSupport()
                 }
+                
+                #if DEBUG
+                Divider()
+                
+                Button("🔧 Toggle Premium (Debug)") {
+                  purchaseManager.debugTogglePremium()
+                }
+                #endif
               } label: {
                 Image(systemName: "line.3.horizontal")
                   .font(.title2)
@@ -52,13 +90,38 @@ struct SearchHeaderView: View {
         .padding(.bottom, 10)
       }
 
-      Text("Start saving money\nat your favorite stores!")
-        .font(.custom("Avenir", size: 32))
-        .fontWeight(.heavy)
-        .foregroundColor(.black)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .fixedSize(horizontal: false, vertical: true)
-        .allowsHitTesting(false)
+      VStack(alignment: .leading, spacing: 8) {
+        Text("Start saving money\nat your favorite stores!")
+          .font(.custom("Avenir", size: 32))
+          .fontWeight(.heavy)
+          .foregroundColor(.black)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .fixedSize(horizontal: false, vertical: true)
+          .allowsHitTesting(false)
+        
+        // Premium badge for premium users
+        if purchaseManager.isPremium {
+          HStack(spacing: 6) {
+            Image(systemName: "crown.fill")
+              .font(.caption)
+              .foregroundColor(.yellow)
+            Text("Premium")
+              .font(.caption)
+              .fontWeight(.semibold)
+              .foregroundColor(.primary)
+          }
+          .padding(.horizontal, 10)
+          .padding(.vertical, 4)
+          .background(
+            ZStack {
+              RoundedRectangle(cornerRadius: 12)
+                .fill(Color.yellow.opacity(0.1))
+              RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.yellow.opacity(0.3), lineWidth: 1)
+            }
+          )
+        }
+      }
     }
   }
 
@@ -81,5 +144,9 @@ struct SearchHeaderView: View {
 }
 
 #Preview {
-  SearchHeaderView(isKeyboardVisible: false)
+  SearchHeaderView(
+    isKeyboardVisible: false, 
+    onUpgradePressed: {},
+    purchaseManager: InAppPurchaseManager()
+  )
 }

@@ -17,6 +17,9 @@ class DiscountCodeViewModel: ObservableObject {
 
   private let service = DiscountCodeService.shared
   private let interstitialAdManager = InterstitialAdManager()
+  
+  // Premium status - will be injected from parent view
+  var isPremium: Bool = false
 
   // State machine for loading process
   private enum LoadingState {
@@ -28,10 +31,6 @@ class DiscountCodeViewModel: ObservableObject {
   }
 
   @Published private var loadingState: LoadingState = .idle
-
-  // MARK: - Debug Settings
-  /// Set to true to disable ads during testing
-  private let isAdsDisabled = true  // Change to false for production
 
   func setMobileAdsStarted(_ started: Bool) {
     interstitialAdManager.setMobileAdsStarted(started)
@@ -46,8 +45,9 @@ class DiscountCodeViewModel: ObservableObject {
     errorMessage = nil
     codes = []
 
-    // Start 1.5-second timer for minimum loading time
-    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+    // Start 1.5-second timer for minimum loading time (skip for premium users)
+    let delay = isPremium ? 0.0 : 1.5
+    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
       self.handleTimerCompleted()
     }
 
@@ -130,9 +130,9 @@ class DiscountCodeViewModel: ObservableObject {
   }
 
   private func showAdIfReady() {
-    // Skip ads during testing if disabled
-    guard !isAdsDisabled else {
-      print("🚫 Ads disabled for testing")
+    // Skip ads if user has premium
+    guard !isPremium else {
+      print("✨ Premium user - skipping ads")
       return
     }
 

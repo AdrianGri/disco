@@ -15,7 +15,7 @@ struct TryButtonsView: View {
   var body: some View {
     HStack {
       Text("Try:")
-        .foregroundColor(.gray)
+        .foregroundColor(.black)
 
       ForEach(domains, id: \.self) { domain in
         Button(domain) {

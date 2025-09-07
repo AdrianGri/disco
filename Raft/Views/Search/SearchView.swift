@@ -11,6 +11,7 @@ struct SearchView: View {
   @EnvironmentObject var appState: AppState
   @Binding var manualDomain: String
   @State private var isKeyboardVisible = false
+  let onUpgradePressed: () -> Void
 
   var body: some View {
     ZStack {
@@ -23,7 +24,11 @@ struct SearchView: View {
         }
 
       VStack(spacing: 20) {
-        SearchHeaderView(isKeyboardVisible: isKeyboardVisible)
+        SearchHeaderView(
+          isKeyboardVisible: isKeyboardVisible,
+          onUpgradePressed: onUpgradePressed,
+          purchaseManager: appState.purchaseManager
+        )
 
         SearchInputView(manualDomain: $manualDomain) {
           performSearch()
@@ -94,6 +99,6 @@ struct SearchView: View {
 }
 
 #Preview {
-  SearchView(manualDomain: .constant(""))
+  SearchView(manualDomain: .constant(""), onUpgradePressed: {})
     .environmentObject(AppState())
 }
