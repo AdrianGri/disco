@@ -11,20 +11,20 @@ struct SearchView: View {
   @EnvironmentObject var appState: AppState
   @Binding var manualDomain: String
   @State private var isKeyboardVisible = false
+  @State private var keyboardHeight: CGFloat = 0
   let onUpgradePressed: () -> Void
 
   var body: some View {
     ZStack {
       Color.appBackground
         .ignoresSafeArea(.all)
-        .contentShape(Rectangle())
-        .onTapGesture {
-          UIApplication.shared.sendAction(
-            #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        }
 
       ScrollView {
         VStack(spacing: 20) {
+          if isKeyboardVisible {
+            Spacer()
+          }
+
           SearchHeaderView(
             isKeyboardVisible: isKeyboardVisible,
             onUpgradePressed: onUpgradePressed,
@@ -49,11 +49,34 @@ struct SearchView: View {
             Spacer()
 
             HowItWorksView()
+          } else {
+            Spacer()
           }
         }
         .padding(.horizontal)
-        .frame(minHeight: UIScreen.main.bounds.height - 100)
+        .frame(
+          minHeight: isKeyboardVisible
+            ? UIScreen.main.bounds.height - keyboardHeight - 44 : UIScreen.main.bounds.height - 100
+        )
+        .contentShape(Rectangle())
+        .onTapGesture {
+          UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .gesture(
+          DragGesture()
+            .onEnded { value in
+              // Detect swipe down gesture (positive translation.height and sufficient distance)
+              if value.translation.height > 50
+                && abs(value.translation.width) < abs(value.translation.height)
+              {
+                UIApplication.shared.sendAction(
+                  #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+              }
+            }
+        )
       }
+      .scrollDisabled(isKeyboardVisible)
     }
     .onAppear {
       setupKeyboardObservers()
@@ -80,8 +103,13 @@ struct SearchView: View {
       forName: UIResponder.keyboardWillShowNotification,
       object: nil,
       queue: .main
-    ) { _ in
+    ) { notification in
       isKeyboardVisible = true
+      if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
+        as? CGRect
+      {
+        keyboardHeight = keyboardFrame.height
+      }
     }
 
     NotificationCenter.default.addObserver(
@@ -90,6 +118,7 @@ struct SearchView: View {
       queue: .main
     ) { _ in
       isKeyboardVisible = false
+      keyboardHeight = 0
     }
   }
 
