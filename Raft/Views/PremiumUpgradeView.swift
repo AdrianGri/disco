@@ -10,7 +10,7 @@ import SwiftUI
 struct PremiumUpgradeView: View {
   @EnvironmentObject var appState: AppState
   @Environment(\.dismiss) private var dismiss
-  
+
   private var purchaseManager: InAppPurchaseManager {
     appState.purchaseManager
   }
@@ -23,17 +23,17 @@ struct PremiumUpgradeView: View {
           Image(systemName: "crown.fill")
             .font(.system(size: 60))
             .foregroundColor(.yellow)
-          
+
           Text("Upgrade to Premium")
             .font(.title)
             .fontWeight(.bold)
-          
+
           Text("Enjoy an ad-free experience")
             .font(.title3)
             .foregroundColor(.secondary)
         }
         .padding(.top, 40)
-        
+
         // Features
         VStack(alignment: .leading, spacing: 20) {
           FeatureRow(
@@ -41,13 +41,13 @@ struct PremiumUpgradeView: View {
             title: "No Ads",
             description: "Remove all advertisements"
           )
-          
+
           FeatureRow(
             icon: "bolt.fill",
             title: "Faster Experience",
             description: "Get discount codes faster for popular sites"
           )
-          
+
           FeatureRow(
             icon: "heart.fill",
             title: "Support Development",
@@ -55,9 +55,9 @@ struct PremiumUpgradeView: View {
           )
         }
         .padding(.horizontal, 20)
-        
+
         Spacer()
-        
+
         // Purchase Section
         VStack(spacing: 16) {
           if purchaseManager.isLoading {
@@ -75,7 +75,7 @@ struct PremiumUpgradeView: View {
                 print("🔧 Calling purchasePremium...")
                 await purchaseManager.purchasePremium()
                 print("🔧 purchasePremium completed")
-                
+
                 // Check if premium status changed and dismiss
                 await MainActor.run {
                   print("🔍 After purchase - isPremium: \(purchaseManager.isPremium)")
@@ -102,7 +102,7 @@ struct PremiumUpgradeView: View {
             }
             // Remove the disabled state since debug mode will work even without products
             // .disabled(purchaseManager.products.isEmpty)
-            
+
             // Restore Button
             Button("Restore Purchases") {
               Task {
@@ -111,7 +111,7 @@ struct PremiumUpgradeView: View {
             }
             .foregroundColor(.blue)
           }
-          
+
           // Error Message
           if let error = purchaseManager.purchaseError {
             Text(error)
@@ -151,14 +151,14 @@ struct FeatureRow: View {
   let icon: String
   let title: String
   let description: String
-  
+
   var body: some View {
     HStack(spacing: 16) {
       Image(systemName: icon)
         .font(.title2)
         .foregroundColor(.blue)
         .frame(width: 30)
-      
+
       VStack(alignment: .leading, spacing: 2) {
         Text(title)
           .font(.headline)
@@ -166,7 +166,7 @@ struct FeatureRow: View {
           .font(.subheadline)
           .foregroundColor(.secondary)
       }
-      
+
       Spacer()
     }
   }

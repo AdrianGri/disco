@@ -41,7 +41,7 @@ struct SearchHeaderView: View {
                     Image(systemName: "crown.fill")
                       .foregroundColor(.yellow)
                   }
-                  
+
                   Divider()
                 } else {
                   // Show upgrade option
@@ -55,10 +55,10 @@ struct SearchHeaderView: View {
                         .foregroundColor(.blue)
                     }
                   }
-                  
+
                   Divider()
                 }
-                
+
                 Button("Privacy Policy") {
                   openPrivacyPolicy()
                 }
@@ -66,13 +66,13 @@ struct SearchHeaderView: View {
                 Button("Support") {
                   openSupport()
                 }
-                
+
                 #if DEBUG
-                Divider()
-                
-                Button("🔧 Toggle Premium (Debug)") {
-                  purchaseManager.debugTogglePremium()
-                }
+                  Divider()
+
+                  Button("🔧 Toggle Premium (Debug)") {
+                    purchaseManager.debugTogglePremium()
+                  }
                 #endif
               } label: {
                 Image(systemName: "line.3.horizontal")
@@ -98,7 +98,7 @@ struct SearchHeaderView: View {
           .frame(maxWidth: .infinity, alignment: .leading)
           .fixedSize(horizontal: false, vertical: true)
           .allowsHitTesting(false)
-        
+
         // Premium badge for premium users
         if purchaseManager.isPremium {
           HStack(spacing: 6) {
@@ -145,7 +145,7 @@ struct SearchHeaderView: View {
 
 #Preview {
   SearchHeaderView(
-    isKeyboardVisible: false, 
+    isKeyboardVisible: false,
     onUpgradePressed: {},
     purchaseManager: InAppPurchaseManager()
   )

@@ -17,7 +17,7 @@ class DiscountCodeViewModel: ObservableObject {
 
   private let service = DiscountCodeService.shared
   private let interstitialAdManager = InterstitialAdManager()
-  
+
   // Premium status - will be injected from parent view
   var isPremium: Bool = false
 
@@ -69,7 +69,7 @@ class DiscountCodeViewModel: ObservableObject {
   private func handleTimerCompleted() {
     // Always show ad when timer completes, regardless of API status
     showAdIfReady()
-    
+
     switch loadingState {
     case .loadingBoth:
       // API still running, timer done - wait for API
