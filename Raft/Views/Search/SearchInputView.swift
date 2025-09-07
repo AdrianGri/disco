@@ -17,6 +17,14 @@ struct SearchInputView: View {
       Text("Paste or type a website **below** to find discounts")
         .foregroundColor(.black)
         .frame(maxWidth: .infinity, alignment: .center)
+        .onTapGesture {
+          // If text field is already focused, dismiss keyboard
+          if isTextFieldFocused {
+            isTextFieldFocused = false
+          } else {
+            isTextFieldFocused = true
+          }
+        }
 
       TextField("e.g. amazon.com", text: $manualDomain)
         .textFieldStyle(PlainTextFieldStyle())
@@ -28,9 +36,6 @@ struct SearchInputView: View {
         .autocapitalization(.none)
         .contentShape(Rectangle())
         .autocorrectionDisabled(true)
-    }
-    .onTapGesture {
-      isTextFieldFocused = true
     }
   }
 }

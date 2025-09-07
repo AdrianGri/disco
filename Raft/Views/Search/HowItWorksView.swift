@@ -10,7 +10,7 @@ import SwiftUI
 struct HowItWorksView: View {
   private let steps = [
     "Enter a website you want to shop at",
-    "Let Disco search for best deals",
+    "Let Disco search for the best deals",
     "Never pay full price again!",
   ]
 

@@ -64,16 +64,17 @@ struct SearchView: View {
             #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
         .gesture(
-          DragGesture()
-            .onEnded { value in
-              // Detect swipe down gesture (positive translation.height and sufficient distance)
-              if value.translation.height > 50
-                && abs(value.translation.width) < abs(value.translation.height)
-              {
-                UIApplication.shared.sendAction(
-                  #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-              }
-            }
+          isKeyboardVisible
+            ? DragGesture()
+              .onEnded { value in
+                // Detect swipe down gesture (positive translation.height and sufficient distance)
+                if value.translation.height > 50
+                  && abs(value.translation.width) < abs(value.translation.height)
+                {
+                  UIApplication.shared.sendAction(
+                    #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
+              } : nil
         )
       }
       .scrollDisabled(isKeyboardVisible)
