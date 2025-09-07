@@ -31,7 +31,6 @@ struct ActionExtensionView: View {
 
       VStack(spacing: 10) {
         Text("Tap **below** to open Disco and find discounts for this website")
-          .font(.custom("Avenir", size: 12))
           .multilineTextAlignment(.center)
 
         Button(action: onOpenApp) {
