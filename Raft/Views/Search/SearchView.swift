@@ -23,34 +23,37 @@ struct SearchView: View {
             #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
 
-      VStack(spacing: 20) {
-        SearchHeaderView(
-          isKeyboardVisible: isKeyboardVisible,
-          onUpgradePressed: onUpgradePressed,
-          purchaseManager: appState.purchaseManager
-        )
+      ScrollView {
+        VStack(spacing: 20) {
+          SearchHeaderView(
+            isKeyboardVisible: isKeyboardVisible,
+            onUpgradePressed: onUpgradePressed,
+            purchaseManager: appState.purchaseManager
+          )
 
-        SearchInputView(manualDomain: $manualDomain) {
-          performSearch()
+          SearchInputView(manualDomain: $manualDomain) {
+            performSearch()
+          }
+
+          SearchButtonView {
+            performSearch()
+          }
+
+          TryButtonsView { domain in
+            appState.domainFromDeepLink = domain
+            UIApplication.shared.sendAction(
+              #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+          }
+
+          if !isKeyboardVisible {
+            Spacer()
+
+            HowItWorksView()
+          }
         }
-
-        SearchButtonView {
-          performSearch()
-        }
-
-        TryButtonsView { domain in
-          appState.domainFromDeepLink = domain
-          UIApplication.shared.sendAction(
-            #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        }
-
-        if !isKeyboardVisible {
-          Spacer()
-
-          HowItWorksView()
-        }
+        .padding(.horizontal)
+        .frame(minHeight: UIScreen.main.bounds.height - 100)
       }
-      .padding(.horizontal)
     }
     .onAppear {
       setupKeyboardObservers()
