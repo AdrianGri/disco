@@ -13,9 +13,24 @@ import UniformTypeIdentifiers
 // MARK: - SwiftUI View
 struct ActionExtensionView: View {
   let onOpenApp: () -> Void
+  let onClose: () -> Void
 
   var body: some View {
     VStack(spacing: 20) {
+      HStack {
+        Spacer()
+        Button(action: onClose) {
+          Image(systemName: "xmark")
+            .font(.title2)
+            .foregroundColor(.gray)
+            .padding(8)
+            .background(Color.gray.opacity(0.2))
+            .clipShape(Circle())
+        }
+      }
+      .padding(.top, 20)
+      .padding(.trailing, 20)
+
       Spacer()
 
       Image("LogoTransparent")
@@ -83,7 +98,10 @@ class ActionViewController: UIViewController {
   }
 
   private func setupSwiftUIView() {
-    let swiftUIView = ActionExtensionView(onOpenApp: openDiscoApp)
+    let swiftUIView = ActionExtensionView(
+      onOpenApp: openDiscoApp,
+      onClose: dismissExtension
+    )
     let hostingController = UIHostingController(rootView: swiftUIView)
 
     addChild(hostingController)
@@ -97,6 +115,10 @@ class ActionViewController: UIViewController {
       hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
     ])
+  }
+
+  private func dismissExtension() {
+    storedExtensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
   }
 
   private func queryDiscountCodes(for url: URL) {
