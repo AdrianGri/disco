@@ -24,7 +24,7 @@ struct ContentView: View {
       .background(Color.appBackground.ignoresSafeArea(.all))
       .navigationDestination(for: String.self) { domain in
         CodesView(domain: domain, viewModel: viewModel) {
-          appState.domainFromDeepLink = nil
+          appState.clearDomainFromDeepLink()
           viewModel.clearCodes()
           manualDomain = ""
         }

@@ -40,7 +40,7 @@ struct SearchView: View {
           }
 
           TryButtonsView { domain in
-            appState.domainFromDeepLink = domain
+            appState.setDomainFromDeepLink(domain)
             UIApplication.shared.sendAction(
               #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
           }
@@ -95,7 +95,7 @@ struct SearchView: View {
 
     let trimmedDomain = manualDomain.trimmingCharacters(in: .whitespacesAndNewlines)
     if !trimmedDomain.isEmpty {
-      appState.domainFromDeepLink = trimmedDomain
+      appState.setDomainFromDeepLink(trimmedDomain)
     }
   }
 

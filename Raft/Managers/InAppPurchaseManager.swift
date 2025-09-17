@@ -18,15 +18,8 @@ class InAppPurchaseManager: NSObject, ObservableObject {
   @Published var products: [Product] = []
 
   // MARK: - Constants
-  private let premiumProductID = "com.adriangri.disco.premium"  // Replace with your actual product ID
+  private let premiumProductID = "com.adriangri.disco.premium"
   private let premiumKey = "com.adriangri.disco.isPremium"
-
-  // MARK: - Debug Settings
-  #if DEBUG
-    private let isDebugMode = true  // Set to false when you have real products configured
-  #else
-    private let isDebugMode = false
-  #endif
 
   // MARK: - Initialization
   override init() {
@@ -75,23 +68,21 @@ class InAppPurchaseManager: NSObject, ObservableObject {
   // MARK: - Purchase Methods
   func purchasePremium() async {
     #if DEBUG
-      if isDebugMode {
-        print("🔧 Debug mode: Simulating premium purchase")
-        isLoading = true
+      print("🔧 Debug mode: Simulating premium purchase")
+      isLoading = true
 
-        // Simulate loading delay
-        try? await Task.sleep(nanoseconds: 1_000_000_000)  // 1 second
+      // Simulate loading delay
+      try? await Task.sleep(nanoseconds: 1_000_000_000)  // 1 second
 
-        // Grant premium access (already on main actor)
-        isPremium = true
-        UserDefaults.standard.set(true, forKey: premiumKey)
-        isLoading = false
+      // Grant premium access (already on main actor)
+      isPremium = true
+      UserDefaults.standard.set(true, forKey: premiumKey)
+      isLoading = false
 
-        print("✅ Debug: Premium purchase successful!")
-        print("✅ Debug: isPremium = \(isPremium)")
+      print("✅ Debug: Premium purchase successful!")
+      print("✅ Debug: isPremium = \(isPremium)")
 
-        return
-      }
+      return
     #endif
 
     guard let product = products.first(where: { $0.id == premiumProductID }) else {
@@ -178,9 +169,7 @@ class InAppPurchaseManager: NSObject, ObservableObject {
 
   func getPremiumPrice() -> String {
     #if DEBUG
-      if isDebugMode {
-        return "$1.99"  // Debug fallback price
-      }
+      return "$1.99"  // Debug fallback price
     #endif
 
     guard let product = getPremiumProduct() else {

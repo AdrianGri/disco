@@ -11,6 +11,9 @@ import SwiftUI
 class InterstitialAdManager: NSObject, ObservableObject {
   // Test ad unit ID for development - replace with your actual ad unit ID before publishing
   // For production, you should replace this with your actual AdMob ad unit ID
+  // private let adUnitID = "ca-app-pub-3940256099942544/4411468910"
+
+  // Actual ad unit ID
   private let adUnitID = "ca-app-pub-3940256099942544/4411468910"
 
   @Published var interstitialAd: InterstitialAd?

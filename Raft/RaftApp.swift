@@ -3,9 +3,34 @@ import SwiftUI
 
 @MainActor
 class AppState: ObservableObject {
-  @Published var domainFromDeepLink: String? = nil
+  @Published private(set) var domainFromDeepLink: String? = nil
   @Published var isMobileAdsStarted = false
   let purchaseManager = InAppPurchaseManager()
+
+  private func extractMainDomain(from domain: String) -> String {
+    let components = domain.components(separatedBy: ".")
+
+    // If there are less than 2 components, return the original domain
+    guard components.count >= 2 else {
+      return domain
+    }
+
+    // For domains like "nike.com", "checkout.nike.com", "shop.nike.com"
+    // We want to return "nike.com" (last two components)
+    let mainDomainComponents = Array(components.suffix(2))
+    return mainDomainComponents.joined(separator: ".")
+  }
+
+  func setDomainFromDeepLink(_ domain: String) {
+    let mainDomain = extractMainDomain(from: domain)
+    domainFromDeepLink = mainDomain
+    print("🌐 Extracted and set main domain: \(mainDomain) (from: \(domain))")
+  }
+
+  func clearDomainFromDeepLink() {
+    domainFromDeepLink = nil
+    print("🧹 Cleared domain from deep link")
+  }
 
   func startMobileAds() {
     guard !isMobileAdsStarted else { return }
@@ -34,8 +59,7 @@ struct RaftApp: App {
             if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let domain = components.queryItems?.first(where: { $0.name == "domain" })?.value
             {
-              appState.domainFromDeepLink = domain
-              print("🌐 Extracted domain: \(domain)")
+              appState.setDomainFromDeepLink(domain)
             }
           }
         }
