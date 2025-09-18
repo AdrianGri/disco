@@ -126,7 +126,6 @@ struct SearchHeaderView: View {
   }
 
   private func openPrivacyPolicy() {
-    // Add your privacy policy URL here
     if let url = URL(
       string:
         "https://docs.google.com/document/d/e/2PACX-1vS4Z1X3-bk94k_YfG8nHQZWkVV23Qq3lEEaYbGyamlJd1Bmv2ktrOg55JZqFqZEf09aSF3egRoPJdf7/pub"
@@ -136,8 +135,7 @@ struct SearchHeaderView: View {
   }
 
   private func openSupport() {
-    // Add your support URL or email here
-    if let url = URL(string: "mailto:support@yourapp.com") {
+    if let url = URL(string: "https://tally.so/r/3jKZaE") {
       UIApplication.shared.open(url)
     }
   }
