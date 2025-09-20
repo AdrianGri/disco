@@ -10,6 +10,7 @@ import SwiftUI
 struct SearchHeaderView: View {
   let isKeyboardVisible: Bool
   let onUpgradePressed: () -> Void
+  let onTutorialPressed: () -> Void
   @ObservedObject var purchaseManager: InAppPurchaseManager
   @State private var showingMenu = false
 
@@ -61,6 +62,10 @@ struct SearchHeaderView: View {
 
                 Button("Privacy Policy") {
                   openPrivacyPolicy()
+                }
+
+                Button("Tutorial") {
+                  onTutorialPressed()
                 }
 
                 Button("Support") {
@@ -145,6 +150,7 @@ struct SearchHeaderView: View {
   SearchHeaderView(
     isKeyboardVisible: false,
     onUpgradePressed: {},
+    onTutorialPressed: {},
     purchaseManager: InAppPurchaseManager()
   )
 }

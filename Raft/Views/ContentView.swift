@@ -13,34 +13,83 @@ struct ContentView: View {
   @State private var manualDomain: String = ""
   @State private var navigationPath = NavigationPath()
   @State private var showPremiumUpgrade = false
+  @State private var tutorialOpacity: Double = 0
 
   var body: some View {
-    NavigationStack(path: $navigationPath) {
-      SearchView(
-        manualDomain: $manualDomain,
-        onUpgradePressed: { showPremiumUpgrade = true }
+    ZStack {
+      NavigationStack(path: $navigationPath) {
+        SearchView(
+          manualDomain: $manualDomain,
+          onUpgradePressed: { showPremiumUpgrade = true },
+          onTutorialPressed: { appState.resetTutorialState() }
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.appBackground.ignoresSafeArea(.all))
+        .navigationDestination(for: String.self) { domain in
+          CodesView(domain: domain, viewModel: viewModel) {
+            appState.clearDomainFromDeepLink()
+            viewModel.clearCodes()
+            manualDomain = ""
+          }
+        }
+        .onChange(of: appState.domainFromDeepLink) { domain in
+          if let domain = domain {
+            navigationPath.append(domain)
+            viewModel.fetchCodes(for: domain)
+          }
+        }
+        .sheet(isPresented: $showPremiumUpgrade) {
+          PremiumUpgradeView()
+            .environmentObject(appState)
+        }
+      }
+
+      // Tutorial overlay
+      TutorialView(
+        isPresented: .init(
+          get: { appState.showTutorial },
+          set: { _ in
+            // Handle fade-out animation here
+            withAnimation(.easeOut(duration: 0.3)) {
+              tutorialOpacity = 0
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+              appState.markTutorialAsSeen()
+              // After tutorial is dismissed, request ATT then start ads
+              Task {
+                await appState.requestTrackingPermissionIfNeeded()
+                appState.startMobileAds()
+              }
+            }
+          }
+        )
       )
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .background(Color.appBackground.ignoresSafeArea(.all))
-      .navigationDestination(for: String.self) { domain in
-        CodesView(domain: domain, viewModel: viewModel) {
-          appState.clearDomainFromDeepLink()
-          viewModel.clearCodes()
-          manualDomain = ""
+      .opacity(tutorialOpacity)
+      .zIndex(appState.showTutorial ? 1 : -1)
+      .allowsHitTesting(tutorialOpacity > 0)
+      .onChange(of: appState.showTutorial) { newValue in
+        if newValue {
+          // Immediately show without fade-in
+          tutorialOpacity = 1
         }
-      }
-      .onChange(of: appState.domainFromDeepLink) { domain in
-        if let domain = domain {
-          navigationPath.append(domain)
-          viewModel.fetchCodes(for: domain)
-        }
-      }
-      .sheet(isPresented: $showPremiumUpgrade) {
-        PremiumUpgradeView()
-          .environmentObject(appState)
+        // Don't handle false case here since button dismissal handles it
       }
     }
     .onAppear {
+      // Check if this is the first launch
+      appState.checkIfFirstLaunch()
+
+      // Set initial tutorial opacity based on showTutorial state
+      tutorialOpacity = appState.showTutorial ? 1 : 0
+
+      // If tutorial is not being shown (user has seen it), request ATT now and start ads
+      if !appState.showTutorial {
+        Task {
+          await appState.requestTrackingPermissionIfNeeded()
+          appState.startMobileAds()
+        }
+      }
+
       if appState.isMobileAdsStarted {
         viewModel.setMobileAdsStarted(true)
       }

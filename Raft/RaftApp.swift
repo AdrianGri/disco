@@ -6,8 +6,11 @@ import SwiftUI
 class AppState: ObservableObject {
   @Published private(set) var domainFromDeepLink: String? = nil
   @Published var isMobileAdsStarted = false
+  @Published var showTutorial = false
   let purchaseManager = InAppPurchaseManager()
   let privacyManager = PrivacyManager()
+
+  private let hasSeenTutorialKey = "hasSeenTutorial"
 
   private func extractMainDomain(from domain: String) -> String {
     let components = domain.components(separatedBy: ".")
@@ -48,6 +51,22 @@ class AppState: ObservableObject {
   func requestTrackingPermissionIfNeeded() async {
     await privacyManager.requestTrackingPermission()
   }
+
+  func checkIfFirstLaunch() {
+    let hasSeenTutorial = UserDefaults.standard.bool(forKey: hasSeenTutorialKey)
+    showTutorial = !hasSeenTutorial
+  }
+
+  func markTutorialAsSeen() {
+    UserDefaults.standard.set(true, forKey: hasSeenTutorialKey)
+    showTutorial = false
+  }
+
+  // For testing purposes - reset the tutorial state
+  func resetTutorialState() {
+    UserDefaults.standard.removeObject(forKey: hasSeenTutorialKey)
+    showTutorial = true
+  }
 }
 
 @main
@@ -70,14 +89,7 @@ struct RaftApp: App {
           }
         }
         .onAppear {
-          Task {
-            // Small delay to ensure app is fully loaded before requesting ATT
-            try? await Task.sleep(nanoseconds: 500_000_000)  // 0.5 seconds
-
-            // Request tracking permission first, then start ads
-            await appState.requestTrackingPermissionIfNeeded()
-            appState.startMobileAds()
-          }
+          // ATT prompt is now shown after the tutorial is dismissed (see ContentView)
         }
     }
   }

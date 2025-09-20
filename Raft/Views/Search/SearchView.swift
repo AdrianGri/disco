@@ -13,6 +13,7 @@ struct SearchView: View {
   @State private var isKeyboardVisible = false
   @State private var keyboardHeight: CGFloat = 0
   let onUpgradePressed: () -> Void
+  let onTutorialPressed: () -> Void
 
   var body: some View {
     ZStack {
@@ -28,6 +29,7 @@ struct SearchView: View {
           SearchHeaderView(
             isKeyboardVisible: isKeyboardVisible,
             onUpgradePressed: onUpgradePressed,
+            onTutorialPressed: onTutorialPressed,
             purchaseManager: appState.purchaseManager
           )
 
@@ -132,6 +134,6 @@ struct SearchView: View {
 }
 
 #Preview {
-  SearchView(manualDomain: .constant(""), onUpgradePressed: {})
+  SearchView(manualDomain: .constant(""), onUpgradePressed: {}, onTutorialPressed: {})
     .environmentObject(AppState())
 }
