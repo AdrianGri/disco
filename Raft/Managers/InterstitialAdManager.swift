@@ -5,6 +5,7 @@
 //  Created by Adrian Gri on 2025-08-21.
 //
 
+import AppTrackingTransparency
 import GoogleMobileAds
 import SwiftUI
 
@@ -45,8 +46,21 @@ class InterstitialAdManager: NSObject, ObservableObject {
 
     Task {
       do {
+        let request = Request()
+
+        // Configure request based on tracking authorization
+        if ATTrackingManager.trackingAuthorizationStatus != .authorized {
+          // User has denied tracking - request non-personalized ads
+          let extras = Extras()
+          extras.additionalParameters = ["npa": "1"]  // Non-personalized ads
+          request.register(extras)
+          print("🔒 Requesting non-personalized ads due to tracking denial")
+        } else {
+          print("🎯 Requesting personalized ads - tracking authorized")
+        }
+
         interstitialAd = try await InterstitialAd.load(
-          with: adUnitID, request: Request())
+          with: adUnitID, request: request)
         await MainActor.run {
           interstitialAd?.fullScreenContentDelegate = self
           isLoading = false
@@ -87,7 +101,7 @@ class InterstitialAdManager: NSObject, ObservableObject {
   }
 }
 
-// MARK: - GADFullScreenContentDelegate
+// MARK: - FullScreenContentDelegate
 extension InterstitialAdManager: FullScreenContentDelegate {
   func adDidRecordImpression(_ ad: FullScreenPresentingAd) {
     print("🎯 Interstitial ad did record impression")

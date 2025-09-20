@@ -1,3 +1,4 @@
+import AppTrackingTransparency
 import GoogleMobileAds
 import SwiftUI
 
@@ -6,6 +7,7 @@ class AppState: ObservableObject {
   @Published private(set) var domainFromDeepLink: String? = nil
   @Published var isMobileAdsStarted = false
   let purchaseManager = InAppPurchaseManager()
+  let privacyManager = PrivacyManager()
 
   private func extractMainDomain(from domain: String) -> String {
     let components = domain.components(separatedBy: ".")
@@ -42,6 +44,10 @@ class AppState: ObservableObject {
       }
     }
   }
+
+  func requestTrackingPermissionIfNeeded() async {
+    await privacyManager.requestTrackingPermission()
+  }
 }
 
 @main
@@ -64,7 +70,14 @@ struct RaftApp: App {
           }
         }
         .onAppear {
-          appState.startMobileAds()
+          Task {
+            // Small delay to ensure app is fully loaded before requesting ATT
+            try? await Task.sleep(nanoseconds: 500_000_000)  // 0.5 seconds
+
+            // Request tracking permission first, then start ads
+            await appState.requestTrackingPermissionIfNeeded()
+            appState.startMobileAds()
+          }
         }
     }
   }
