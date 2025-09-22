@@ -13,7 +13,6 @@ struct ContentView: View {
   @State private var manualDomain: String = ""
   @State private var navigationPath = NavigationPath()
   @State private var showPremiumUpgrade = false
-  @State private var tutorialOpacity: Double = 0
 
   var body: some View {
     ZStack {
@@ -43,44 +42,10 @@ struct ContentView: View {
             .environmentObject(appState)
         }
       }
-
-      // Tutorial overlay
-      TutorialView(
-        isPresented: .init(
-          get: { appState.showTutorial },
-          set: { _ in
-            // Handle fade-out animation here
-            withAnimation(.easeOut(duration: 0.3)) {
-              tutorialOpacity = 0
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-              appState.markTutorialAsSeen()
-              // After tutorial is dismissed, request ATT then start ads
-              Task {
-                await appState.requestTrackingPermissionIfNeeded()
-                appState.startMobileAds()
-              }
-            }
-          }
-        )
-      )
-      .opacity(tutorialOpacity)
-      .zIndex(appState.showTutorial ? 1 : -1)
-      .allowsHitTesting(tutorialOpacity > 0)
-      .onChange(of: appState.showTutorial) { newValue in
-        if newValue {
-          // Immediately show without fade-in
-          tutorialOpacity = 1
-        }
-        // Don't handle false case here since button dismissal handles it
-      }
     }
     .onAppear {
       // Check if this is the first launch
       appState.checkIfFirstLaunch()
-
-      // Set initial tutorial opacity based on showTutorial state
-      tutorialOpacity = appState.showTutorial ? 1 : 0
 
       // If tutorial is not being shown (user has seen it), request ATT now and start ads
       if !appState.showTutorial {
@@ -103,6 +68,15 @@ struct ContentView: View {
     }
     .onChange(of: appState.purchaseManager.isPremium) { isPremium in
       viewModel.isPremium = isPremium
+    }
+    .sheet(
+      isPresented: .init(
+        get: { appState.showTutorial },
+        set: { appState.showTutorial = $0 }
+      )
+    ) {
+      TutorialView()
+        .environmentObject(appState)
     }
   }
 }

@@ -9,65 +9,93 @@ import AVKit
 import SwiftUI
 
 struct TutorialView: View {
-  @Binding var isPresented: Bool
+  @EnvironmentObject var appState: AppState
+  @Environment(\.dismiss) private var dismiss
   @State private var player: AVPlayer?
   @State private var isPlayerReady = false
   @State private var playerStatusObserver: NSKeyValueObservation?
+  @State private var didComplete = false
 
   var body: some View {
-    ZStack {
-      // Background
-      Color.appBackground
-        .ignoresSafeArea()
+    NavigationView {
+      ZStack {
+        // Background
+        Color.appBackground.ignoresSafeArea()
 
-      VStack(spacing: 20) {
-        // Title
-        Text("Welcome to Disco!")
-          .font(.custom("Avenir", size: 32))
-          .fontWeight(.bold)
-          .foregroundColor(.primary)
+        VStack(spacing: 20) {
+          // Title
+          Text("Welcome to Disco!")
+            .font(.custom("Avenir", size: 32))
+            .fontWeight(.bold)
+            .foregroundColor(.primary)
 
-        // Video area
-        ZStack {
-          // Placeholder / loader until ready
-          if !isPlayerReady {
-            ProgressView()
-              .frame(width: 300, height: 576)
+          // Video area
+          ZStack {
+            // Placeholder / loader until ready
+            if !isPlayerReady {
+              ProgressView()
+                .frame(width: 300, height: 576)
+            }
+
+            if let player = player {
+              VideoPlayer(player: player)
+                .frame(width: 300, height: 576)
+                .cornerRadius(12)
+                .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 6)
+                .allowsHitTesting(false)
+                .opacity(isPlayerReady ? 1 : 0)
+            }
           }
 
-          if let player = player {
-            VideoPlayer(player: player)
-              .frame(width: 300, height: 576)
-              .cornerRadius(12)
-              .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 6)
-              .allowsHitTesting(false)
-              .opacity(isPlayerReady ? 1 : 0)
+          Spacer()
+
+          // Continue button
+          Button {
+            completeAndDismiss()
+          } label: {
+            Text("Get Started")
+              .foregroundColor(.appAccent)
+              .padding()
+              .frame(maxWidth: 250)
+              .background(.appPrimary)
+              .cornerRadius(10)
+              .fontWeight(.semibold)
           }
         }
-
-        Spacer()
-
-        // Continue button
-        Button {
-          isPresented = false
-        } label: {
-          Text("Get Started")
-            .foregroundColor(.appAccent)
-            .padding()
-            .frame(maxWidth: 250)
-            .background(.appPrimary)
-            .cornerRadius(10)
-            .fontWeight(.semibold)
+        .padding(.vertical, 40)
+        .padding(.horizontal, 16)
+      }
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button("Close") {
+            completeAndDismiss()
+          }
         }
       }
-      .padding(.vertical, 60)
     }
     .onAppear {
       setupPlayer()
     }
     .onDisappear {
       cleanupPlayer()
+      // Handle swipe-to-dismiss: ensure completion flow runs exactly once
+      if !didComplete {
+        completeAndDismiss()
+      }
     }
+  }
+
+  private func completeAndDismiss() {
+    guard !didComplete else { return }
+    didComplete = true
+    // Mark as seen and kick off privacy+ads flow, then dismiss
+    appState.markTutorialAsSeen()
+    Task {
+      await appState.requestTrackingPermissionIfNeeded()
+      appState.startMobileAds()
+    }
+    dismiss()
   }
 
   private func setupPlayer() {
@@ -115,5 +143,6 @@ struct TutorialView: View {
 }
 
 #Preview {
-  TutorialView(isPresented: .constant(true))
+  TutorialView()
+    .environmentObject(AppState())
 }
