@@ -18,11 +18,13 @@ struct TutorialView: View {
   @State private var firstPlayer: AVPlayer?
   @State private var isFirstPlayerReady = false
   @State private var firstPlayerStatusObserver: NSKeyValueObservation?
+  @State private var firstPlaybackObserver: NSObjectProtocol?
 
   // Second page (safari_tutorial.mov) state
   @State private var secondPlayer: AVPlayer?
   @State private var isSecondPlayerReady = false
   @State private var secondPlayerStatusObserver: NSKeyValueObservation?
+  @State private var secondPlaybackObserver: NSObjectProtocol?
 
   var body: some View {
     NavigationView {
@@ -130,6 +132,11 @@ struct TutorialView: View {
       let maxWidth: CGFloat = max(0, min(horizontalCap, verticalCap, 320))
       let height: CGFloat = (maxWidth > 0) ? (maxWidth / aspectWOverH) : 0
 
+      // Slight overscan so the video content extends beyond the mask and is clipped cleanly
+      let overscan: CGFloat = 0.75
+      let contentW = maxWidth + overscan
+      let contentH = height + overscan
+
       VStack(spacing: 16) {
         // Title
         Text(title)
@@ -138,7 +145,7 @@ struct TutorialView: View {
           .foregroundColor(.primary)
           .multilineTextAlignment(.center)
 
-        // Video area sized exactly to aspect ratio
+        // Video area sized exactly to aspect ratio with slight overscan
         ZStack {
           // Placeholder / loader until ready
           if !isReady {
@@ -147,14 +154,16 @@ struct TutorialView: View {
           }
 
           if let player = player {
+            // Make the content slightly larger and clip to the exact rounded target size
             VideoPlayer(player: player)
-              .frame(width: maxWidth, height: height)
-              .cornerRadius(12)
-              .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 4)
+              .frame(width: contentW, height: contentH)
               .allowsHitTesting(false)
               .opacity(isReady ? 1 : 0)
           }
         }
+        .frame(width: maxWidth, height: height)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 4)
 
         Spacer(minLength: 10)
       }
@@ -206,7 +215,7 @@ struct TutorialView: View {
     }
 
     // Set up looping
-    NotificationCenter.default.addObserver(
+    firstPlaybackObserver = NotificationCenter.default.addObserver(
       forName: .AVPlayerItemDidPlayToEndTime,
       object: playerItem,
       queue: .main
@@ -244,7 +253,7 @@ struct TutorialView: View {
     }
 
     // Set up looping
-    NotificationCenter.default.addObserver(
+    secondPlaybackObserver = NotificationCenter.default.addObserver(
       forName: .AVPlayerItemDidPlayToEndTime,
       object: playerItem,
       queue: .main
@@ -269,7 +278,14 @@ struct TutorialView: View {
     secondPlayerStatusObserver?.invalidate()
     secondPlayerStatusObserver = nil
 
-    NotificationCenter.default.removeObserver(self)
+    if let token = firstPlaybackObserver {
+      NotificationCenter.default.removeObserver(token)
+      firstPlaybackObserver = nil
+    }
+    if let token = secondPlaybackObserver {
+      NotificationCenter.default.removeObserver(token)
+      secondPlaybackObserver = nil
+    }
   }
 
   private func handlePageChange(_ newPage: Int) {
