@@ -35,30 +35,62 @@ struct TutorialView: View {
           tutorialPageView(
             title: "Welcome to Disco!",
             player: firstPlayer,
-            isReady: isFirstPlayerReady,
-            buttonText: "Next"
-          ) {
-            // Navigate to next page
-            withAnimation(.easeInOut(duration: 0.5)) {
-              currentPage = 1
-            }
-          }
+            isReady: isFirstPlayerReady
+          )
           .tag(0)
 
           // Second Page - safari_tutorial.mov
           tutorialPageView(
             title: "Use Disco in Safari!",
             player: secondPlayer,
-            isReady: isSecondPlayerReady,
-            buttonText: "Start Saving"
-          ) {
-            // Complete tutorial
-            completeAndDismiss()
-          }
+            isReady: isSecondPlayerReady
+          )
           .tag(1)
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         .animation(.easeInOut(duration: 0.5), value: currentPage)
+        .overlay(alignment: .bottom) {
+          VStack(spacing: 12) {
+            // Page indicator dots
+            HStack(spacing: 8) {
+              Circle()
+                .frame(width: 8, height: 8)
+                .foregroundColor(currentPage == 0 ? .appAccent : .black.opacity(0.3))
+              Circle()
+                .frame(width: 8, height: 8)
+                .foregroundColor(currentPage == 1 ? .appAccent : .black.opacity(0.3))
+            }
+            .animation(.easeInOut(duration: 0.2), value: currentPage)
+
+            // Stationary bottom button
+            Button {
+              if currentPage == 0 {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                  currentPage = 1
+                }
+              } else {
+                completeAndDismiss()
+              }
+            } label: {
+              ZStack {
+                Text("Next")
+                  .opacity(currentPage == 0 ? 1.0 : 0.0)
+                Text("Start Saving")
+                  .opacity(currentPage == 1 ? 1.0 : 0.0)
+              }
+              .foregroundColor(.appAccent)
+              .padding(.vertical, 14)
+              .padding(.horizontal, 20)
+              .frame(maxWidth: 250)
+              .background(.appPrimary)
+              .cornerRadius(10)
+              .fontWeight(.semibold)
+              .animation(.easeInOut(duration: 0.2), value: currentPage)
+            }
+          }
+          .padding(.horizontal, 16)
+          .padding(.bottom, 24)
+        }
       }
       .navigationBarTitleDisplayMode(.inline)
     }
@@ -82,9 +114,7 @@ struct TutorialView: View {
   private func tutorialPageView(
     title: String,
     player: AVPlayer?,
-    isReady: Bool,
-    buttonText: String,
-    action: @escaping () -> Void
+    isReady: Bool
   ) -> some View {
     GeometryReader { geo in
       // Known video size: 500(w) x 960(h) => aspect w/h = 500/960 (~0.5208)
@@ -127,20 +157,6 @@ struct TutorialView: View {
         }
 
         Spacer(minLength: 10)
-
-        // Continue button
-        Button {
-          action()
-        } label: {
-          Text(buttonText)
-            .foregroundColor(.appAccent)
-            .padding(.vertical, 14)
-            .padding(.horizontal, 20)
-            .frame(maxWidth: 250)
-            .background(.appPrimary)
-            .cornerRadius(10)
-            .fontWeight(.semibold)
-        }
       }
       .padding(.vertical, 20)
       .padding(.horizontal, 16)
