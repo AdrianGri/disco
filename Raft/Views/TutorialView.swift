@@ -14,17 +14,17 @@ struct TutorialView: View {
   @State private var currentPage = 0
   @State private var didComplete = false
 
-  // First page (tutorial.mov) state
-  @State private var firstPlayer: AVPlayer?
-  @State private var isFirstPlayerReady = false
-  @State private var firstPlayerStatusObserver: NSKeyValueObservation?
-  @State private var firstPlaybackObserver: NSObjectProtocol?
-
-  // Second page (safari_tutorial.mov) state
-  @State private var secondPlayer: AVPlayer?
-  @State private var isSecondPlayerReady = false
-  @State private var secondPlayerStatusObserver: NSKeyValueObservation?
-  @State private var secondPlaybackObserver: NSObjectProtocol?
+  // Video controllers
+  @StateObject private var firstController = LoopingVideoController(
+    resource: "tutorial",
+    type: "mov",
+    autoPlayWhenReady: true
+  )
+  @StateObject private var secondController = LoopingVideoController(
+    resource: "safari_tutorial",
+    type: "mov",
+    autoPlayWhenReady: false
+  )
 
   var body: some View {
     NavigationView {
@@ -36,18 +36,27 @@ struct TutorialView: View {
           // First Page - tutorial.mov
           tutorialPageView(
             title: "Welcome to Disco!",
-            player: firstPlayer,
-            isReady: isFirstPlayerReady
+            player: firstController.player,
+            isReady: firstController.isReady
           )
           .tag(0)
 
           // Second Page - safari_tutorial.mov
           tutorialPageView(
             title: "Use Disco in Safari!",
-            player: secondPlayer,
-            isReady: isSecondPlayerReady
+            player: secondController.player,
+            isReady: secondController.isReady
           )
           .tag(1)
+
+          // Third Page - static image
+          tutorialPageView(
+            title: "You're All Set!",
+            player: nil,
+            isReady: true,
+            imageName: "TutorialDisclaimer"
+          )
+          .tag(2)
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         .animation(.easeInOut(duration: 0.5), value: currentPage)
@@ -55,30 +64,27 @@ struct TutorialView: View {
           VStack(spacing: 12) {
             // Page indicator dots
             HStack(spacing: 8) {
-              Circle()
-                .frame(width: 8, height: 8)
-                .foregroundColor(currentPage == 0 ? .appAccent : .black.opacity(0.3))
-              Circle()
-                .frame(width: 8, height: 8)
-                .foregroundColor(currentPage == 1 ? .appAccent : .black.opacity(0.3))
+              ForEach(0..<3) { index in
+                Circle()
+                  .frame(width: 8, height: 8)
+                  .foregroundColor(currentPage == index ? .appAccent : .black.opacity(0.3))
+              }
             }
             .animation(.easeInOut(duration: 0.2), value: currentPage)
 
             // Stationary bottom button
             Button {
-              if currentPage == 0 {
-                withAnimation(.easeInOut(duration: 0.5)) {
-                  currentPage = 1
-                }
+              if currentPage < 2 {
+                withAnimation(.easeInOut(duration: 0.5)) { currentPage += 1 }
               } else {
                 completeAndDismiss()
               }
             } label: {
               ZStack {
                 Text("Next")
-                  .opacity(currentPage == 0 ? 1.0 : 0.0)
+                  .opacity(currentPage < 2 ? 1.0 : 0.0)
                 Text("Start Saving")
-                  .opacity(currentPage == 1 ? 1.0 : 0.0)
+                  .opacity(currentPage == 2 ? 1.0 : 0.0)
               }
               .foregroundColor(.appAccent)
               .padding(.vertical, 14)
@@ -97,18 +103,17 @@ struct TutorialView: View {
       .navigationBarTitleDisplayMode(.inline)
     }
     .interactiveDismissDisabled(true)
-    .onAppear {
-      setupPlayers()
-    }
     .onDisappear {
-      cleanupPlayers()
+      // Controllers deinit automatically handle cleanup.
       // Handle swipe-to-dismiss: ensure completion flow runs exactly once
-      if !didComplete {
-        completeAndDismiss()
-      }
+      if !didComplete { completeAndDismiss() }
     }
     .onChange(of: currentPage) { newPage in
       handlePageChange(newPage)
+    }
+    .onChange(of: secondController.isReady) { ready in
+      // If second video becomes ready while user is already on page 1, start playback.
+      if ready && currentPage == 1 { secondController.playIfReady() }
     }
   }
 
@@ -116,7 +121,8 @@ struct TutorialView: View {
   private func tutorialPageView(
     title: String,
     player: AVPlayer?,
-    isReady: Bool
+    isReady: Bool,
+    imageName: String? = nil
   ) -> some View {
     GeometryReader { geo in
       // Known video size: 500(w) x 960(h) => aspect w/h = 500/960 (~0.5208)
@@ -147,18 +153,24 @@ struct TutorialView: View {
 
         // Video area sized exactly to aspect ratio with slight overscan
         ZStack {
-          // Placeholder / loader until ready
-          if !isReady {
-            ProgressView()
-              .frame(width: maxWidth, height: height)
-          }
-
-          if let player = player {
-            // Make the content slightly larger and clip to the exact rounded target size
-            VideoPlayer(player: player)
+          if let imageName = imageName {
+            Image(imageName)
+              .resizable()
+              .scaledToFill()
               .frame(width: contentW, height: contentH)
-              .allowsHitTesting(false)
-              .opacity(isReady ? 1 : 0)
+              .clipped()
+          } else {
+            if !isReady {
+              ProgressView()
+                .frame(width: maxWidth, height: height)
+            }
+            if let player = player {
+              // Make the content slightly larger and clip to the exact rounded target size
+              VideoPlayer(player: player)
+                .frame(width: contentW, height: contentH)
+                .allowsHitTesting(false)
+                .opacity(isReady ? 1 : 0)
+            }
           }
         }
         .frame(width: maxWidth, height: height)
@@ -185,122 +197,19 @@ struct TutorialView: View {
     dismiss()
   }
 
-  private func setupPlayers() {
-    setupFirstPlayer()
-    setupSecondPlayer()
-  }
-
-  private func setupFirstPlayer() {
-    guard let path = Bundle.main.path(forResource: "tutorial", ofType: "mov") else {
-      print("❌ Could not find tutorial.mov")
-      return
-    }
-
-    let url = URL(fileURLWithPath: path)
-    let playerItem = AVPlayerItem(url: url)
-    let newPlayer = AVPlayer(playerItem: playerItem)
-
-    newPlayer.isMuted = true
-    newPlayer.automaticallyWaitsToMinimizeStalling = false
-    self.firstPlayer = newPlayer
-
-    // Observe readiness to avoid flashing a black rectangle
-    firstPlayerStatusObserver = playerItem.observe(\.status, options: [.initial, .new]) { _, _ in
-      if playerItem.status == .readyToPlay {
-        DispatchQueue.main.async {
-          self.isFirstPlayerReady = true
-          newPlayer.play()
-        }
-      }
-    }
-
-    // Set up looping
-    firstPlaybackObserver = NotificationCenter.default.addObserver(
-      forName: .AVPlayerItemDidPlayToEndTime,
-      object: playerItem,
-      queue: .main
-    ) { _ in
-      newPlayer.seek(to: .zero)
-      newPlayer.play()
-    }
-  }
-
-  private func setupSecondPlayer() {
-    guard let path = Bundle.main.path(forResource: "safari_tutorial", ofType: "mov") else {
-      print("❌ Could not find safari_tutorial.mov")
-      return
-    }
-
-    let url = URL(fileURLWithPath: path)
-    let playerItem = AVPlayerItem(url: url)
-    let newPlayer = AVPlayer(playerItem: playerItem)
-
-    newPlayer.isMuted = true
-    newPlayer.automaticallyWaitsToMinimizeStalling = false
-    self.secondPlayer = newPlayer
-
-    // Observe readiness to avoid flashing a black rectangle
-    secondPlayerStatusObserver = playerItem.observe(\.status, options: [.initial, .new]) { _, _ in
-      if playerItem.status == .readyToPlay {
-        DispatchQueue.main.async {
-          self.isSecondPlayerReady = true
-          // Only start playing if we're on the second page
-          if self.currentPage == 1 {
-            newPlayer.play()
-          }
-        }
-      }
-    }
-
-    // Set up looping
-    secondPlaybackObserver = NotificationCenter.default.addObserver(
-      forName: .AVPlayerItemDidPlayToEndTime,
-      object: playerItem,
-      queue: .main
-    ) { _ in
-      newPlayer.seek(to: .zero)
-      newPlayer.play()
-    }
-  }
-
-  private func cleanupPlayers() {
-    // Cleanup first player
-    firstPlayer?.pause()
-    firstPlayer = nil
-    isFirstPlayerReady = false
-    firstPlayerStatusObserver?.invalidate()
-    firstPlayerStatusObserver = nil
-
-    // Cleanup second player
-    secondPlayer?.pause()
-    secondPlayer = nil
-    isSecondPlayerReady = false
-    secondPlayerStatusObserver?.invalidate()
-    secondPlayerStatusObserver = nil
-
-    if let token = firstPlaybackObserver {
-      NotificationCenter.default.removeObserver(token)
-      firstPlaybackObserver = nil
-    }
-    if let token = secondPlaybackObserver {
-      NotificationCenter.default.removeObserver(token)
-      secondPlaybackObserver = nil
-    }
-  }
-
   private func handlePageChange(_ newPage: Int) {
-    if newPage == 0 {
-      // On first page - play first video, pause second
-      if isFirstPlayerReady {
-        firstPlayer?.play()
-      }
-      secondPlayer?.pause()
-    } else if newPage == 1 {
-      // On second page - play second video, pause first
-      firstPlayer?.pause()
-      if isSecondPlayerReady {
-        secondPlayer?.play()
-      }
+    switch newPage {
+    case 0:
+      if firstController.isReady { firstController.playIfReady() }
+      secondController.pause()
+    case 1:
+      firstController.pause()
+      if secondController.isReady { secondController.playIfReady() }
+    case 2:
+      firstController.pause()
+      secondController.pause()
+    default:
+      break
     }
   }
 }
