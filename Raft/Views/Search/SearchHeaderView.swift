@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchHeaderView: View {
   let isKeyboardVisible: Bool
-  let onUpgradePressed: () -> Void
+  // let onUpgradePressed: () -> Void
   let onTutorialPressed: () -> Void
   @ObservedObject var purchaseManager: InAppPurchaseManager
   @State private var showingMenu = false
@@ -32,33 +32,33 @@ struct SearchHeaderView: View {
 
             VStack {
               Menu {
-                // Premium status or upgrade option
-                if purchaseManager.isPremium {
-                  // Show premium status (non-interactive)
-                  Label {
-                    Text("Premium Active")
-                      .foregroundColor(.primary)
-                  } icon: {
-                    Image(systemName: "crown.fill")
-                      .foregroundColor(.yellow)
-                  }
+                // // Premium status or upgrade option
+                // if purchaseManager.isPremium {
+                //   // Show premium status (non-interactive)
+                //   Label {
+                //     Text("Premium Active")
+                //       .foregroundColor(.primary)
+                //   } icon: {
+                //     Image(systemName: "crown.fill")
+                //       .foregroundColor(.yellow)
+                //   }
 
-                  Divider()
-                } else {
-                  // Show upgrade option
-                  Button {
-                    onUpgradePressed()
-                  } label: {
-                    Label {
-                      Text("Upgrade to Premium")
-                    } icon: {
-                      Image(systemName: "crown.fill")
-                        .foregroundColor(.blue)
-                    }
-                  }
+                //   Divider()
+                // } else {
+                //   // Show upgrade option
+                //   Button {
+                //     onUpgradePressed()
+                //   } label: {
+                //     Label {
+                //       Text("Upgrade to Premium")
+                //     } icon: {
+                //       Image(systemName: "crown.fill")
+                //         .foregroundColor(.blue)
+                //     }
+                //   }
 
-                  Divider()
-                }
+                //   Divider()
+                // }
 
                 Button("Privacy Policy") {
                   openPrivacyPolicy()
@@ -149,7 +149,7 @@ struct SearchHeaderView: View {
 #Preview {
   SearchHeaderView(
     isKeyboardVisible: false,
-    onUpgradePressed: {},
+    // onUpgradePressed: {},
     onTutorialPressed: {},
     purchaseManager: InAppPurchaseManager()
   )

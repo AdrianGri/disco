@@ -12,7 +12,7 @@ struct SearchView: View {
   @Binding var manualDomain: String
   @State private var isKeyboardVisible = false
   @State private var keyboardHeight: CGFloat = 0
-  let onUpgradePressed: () -> Void
+  // let onUpgradePressed: () -> Void
   let onTutorialPressed: () -> Void
 
   var body: some View {
@@ -28,7 +28,7 @@ struct SearchView: View {
 
           SearchHeaderView(
             isKeyboardVisible: isKeyboardVisible,
-            onUpgradePressed: onUpgradePressed,
+            // onUpgradePressed: onUpgradePressed,
             onTutorialPressed: onTutorialPressed,
             purchaseManager: appState.purchaseManager
           )
@@ -134,6 +134,6 @@ struct SearchView: View {
 }
 
 #Preview {
-  SearchView(manualDomain: .constant(""), onUpgradePressed: {}, onTutorialPressed: {})
+  SearchView(manualDomain: .constant(""), /*onUpgradePressed: {},*/ onTutorialPressed: {})
     .environmentObject(AppState())
 }

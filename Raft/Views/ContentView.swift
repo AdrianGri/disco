@@ -19,7 +19,7 @@ struct ContentView: View {
       NavigationStack(path: $navigationPath) {
         SearchView(
           manualDomain: $manualDomain,
-          onUpgradePressed: { showPremiumUpgrade = true },
+          // onUpgradePressed: { showPremiumUpgrade = true },
           onTutorialPressed: { appState.resetTutorialState() }
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
