@@ -15,7 +15,7 @@ class InterstitialAdManager: NSObject, ObservableObject {
   // private let adUnitID = "ca-app-pub-3940256099942544/4411468910"
 
   // Actual ad unit ID
-  private let adUnitID = "ca-app-pub-3940256099942544/4411468910"
+  private let adUnitID = "ca-app-pub-2372535455386330/6074269316"
 
   @Published var interstitialAd: InterstitialAd?
   @Published var isLoading = false
