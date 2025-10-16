@@ -11,6 +11,9 @@ import SwiftUI
 struct SimpleLoadingVideoView: View {
   let videoName: String
   @State private var player: AVPlayer?
+  @State private var isReady: Bool = false
+  @State private var statusObserver: NSKeyValueObservation?
+  @State private var playbackObserver: NSObjectProtocol?
 
   var body: some View {
     ZStack {
@@ -19,15 +22,19 @@ struct SimpleLoadingVideoView: View {
         .fill(.appBackground)
         .frame(width: 120, height: 120)
 
+      // Always show progress while not ready
+      if !isReady {
+        ProgressView()
+          .scaleEffect(0.8)
+      }
+
+      // Only show video when ready
       if let player = player {
         VideoPlayer(player: player)
           .frame(width: 120, height: 120)
           .clipShape(RoundedRectangle(cornerRadius: 12))
           .allowsHitTesting(false)
-      } else {
-        // Loading indicator
-        ProgressView()
-          .scaleEffect(0.8)
+          .opacity(isReady ? 1 : 0)
       }
     }
     .onAppear {
@@ -48,26 +55,40 @@ struct SimpleLoadingVideoView: View {
     let newPlayer = AVPlayer(playerItem: playerItem)
 
     newPlayer.isMuted = true
+    newPlayer.automaticallyWaitsToMinimizeStalling = false
     self.player = newPlayer
 
+    // Observe readiness
+    statusObserver = playerItem.observe(\.status, options: [.initial, .new]) { [weak newPlayer] item, _ in
+      if item.status == .readyToPlay {
+        DispatchQueue.main.async {
+          self.isReady = true
+          newPlayer?.play()
+        }
+      }
+    }
+
     // Set up looping
-    NotificationCenter.default.addObserver(
+    playbackObserver = NotificationCenter.default.addObserver(
       forName: .AVPlayerItemDidPlayToEndTime,
       object: playerItem,
       queue: .main
-    ) { _ in
-      newPlayer.seek(to: .zero)
-      newPlayer.play()
+    ) { [weak newPlayer] _ in
+      newPlayer?.seek(to: .zero)
+      newPlayer?.play()
     }
-
-    // Start playing
-    newPlayer.play()
   }
 
   private func cleanupPlayer() {
     player?.pause()
     player = nil
-    NotificationCenter.default.removeObserver(self)
+    isReady = false
+    statusObserver?.invalidate()
+    statusObserver = nil
+    if let token = playbackObserver {
+      NotificationCenter.default.removeObserver(token)
+    }
+    playbackObserver = nil
   }
 }
 
