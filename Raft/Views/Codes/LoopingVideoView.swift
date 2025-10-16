@@ -1,5 +1,5 @@
 //
-//  SimpleLoadingVideoView.swift
+//  LoopingVideoView.swift
 //  Raft
 //
 //  Created by Adrian Gri on 2025-09-01.
@@ -8,7 +8,7 @@
 import AVKit
 import SwiftUI
 
-struct SimpleLoadingVideoView: View {
+struct LoopingVideoView: View {
   let videoName: String
   @State private var player: AVPlayer?
   @State private var isReady: Bool = false
@@ -21,12 +21,6 @@ struct SimpleLoadingVideoView: View {
       RoundedRectangle(cornerRadius: 12)
         .fill(.appBackground)
         .frame(width: 120, height: 120)
-
-      // Always show progress while not ready
-      if !isReady {
-        ProgressView()
-          .scaleEffect(0.8)
-      }
 
       // Only show video when ready
       if let player = player {
@@ -93,6 +87,6 @@ struct SimpleLoadingVideoView: View {
 }
 
 #Preview {
-  SimpleLoadingVideoView(videoName: "loading_animation")
+  LoopingVideoView(videoName: "loading_animation")
     .background(Color.gray.opacity(0.1))
 }

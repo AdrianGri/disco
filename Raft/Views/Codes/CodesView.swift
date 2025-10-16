@@ -96,7 +96,7 @@ struct CodesView: View {
       if viewModel.isLoading {
         Spacer()
         VStack {
-          SimpleLoadingVideoView(videoName: "loading_animation")
+          LoopingVideoView(videoName: "loading_animation")
           Text(loadingPhrases[currentLoadingTextIndex])
             .font(.custom("Avenir", size: 20))
             .padding(.top, 16)
