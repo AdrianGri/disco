@@ -10,7 +10,7 @@ import SwiftUI
 struct TryButtonsView: View {
   let onDomainSelect: (String) -> Void
 
-  private let domains = ["nike.com", "sephora.com", "zara.com"]
+  private let domains = ["sephora.com", "abercrombie.com", "gap.com"]
 
   var body: some View {
     HStack {
