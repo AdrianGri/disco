@@ -25,11 +25,16 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.appBackground.ignoresSafeArea(.all))
         .navigationDestination(for: String.self) { domain in
-          CodesView(domain: domain, viewModel: viewModel) {
-            appState.clearDomainFromDeepLink()
-            viewModel.clearCodes()
-            manualDomain = ""
-          }
+          CodesView(domain: domain, viewModel: viewModel)
+            .onAppear {
+              // Clear state when CodesView appears to prepare for next search
+              appState.clearDomainFromDeepLink()
+              manualDomain = ""
+            }
+            .onDisappear {
+              // Clear codes when leaving to prevent stale data on next search
+              viewModel.clearCodes()
+            }
         }
         .onChange(of: appState.domainFromDeepLink) { domain in
           if let domain = domain {

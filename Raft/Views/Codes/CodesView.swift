@@ -11,7 +11,6 @@ import SwiftUI
 struct CodesView: View {
   let domain: String
   @ObservedObject var viewModel: DiscountCodeViewModel
-  let onClose: () -> Void
   @Environment(\.dismiss) private var dismiss
 
   @State private var isAnimating = false
@@ -53,13 +52,8 @@ struct CodesView: View {
   }
 
   private func handleClose() {
-    // First dismiss the navigation
+    // Dismiss the navigation
     dismiss()
-
-    // Then clear the state after navigation animation completes
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-      onClose()
-    }
   }
 
   var body: some View {
@@ -202,5 +196,5 @@ struct CodesView: View {
 }
 
 #Preview {
-  CodesView(domain: "www.amazon.com", viewModel: DiscountCodeViewModel(), onClose: {})
+  CodesView(domain: "www.amazon.com", viewModel: DiscountCodeViewModel())
 }
