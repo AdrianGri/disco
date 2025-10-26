@@ -88,9 +88,6 @@ struct RaftApp: App {
             }
           }
         }
-        .onAppear {
-          // ATT prompt is now shown after the tutorial is dismissed (see ContentView)
-        }
     }
   }
 }

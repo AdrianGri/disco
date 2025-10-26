@@ -21,6 +21,9 @@ class DiscountCodeViewModel: ObservableObject {
   // Premium status - will be injected from parent view
   var isPremium: Bool = false
 
+  // Task for fetching codes - can be cancelled
+  private var fetchTask: Task<Void, Never>?
+
   // State machine for loading process
   private enum LoadingState {
     case idle
@@ -39,6 +42,9 @@ class DiscountCodeViewModel: ObservableObject {
   func fetchCodes(for domain: String) {
     guard !domain.isEmpty else { return }
 
+    // Cancel any existing fetch task
+    fetchTask?.cancel()
+
     // Initialize loading state
     loadingState = .loadingBoth
     isLoading = true
@@ -52,12 +58,25 @@ class DiscountCodeViewModel: ObservableObject {
     }
 
     // Start API call
-    Task {
+    fetchTask = Task {
       do {
         let fetchedCodes = try await service.fetchDiscountCodes(for: domain)
+        
+        // Check if task was cancelled before updating state
+        guard !Task.isCancelled else {
+          print("⚠️ Fetch task was cancelled for \(domain)")
+          return
+        }
+        
         codes = fetchedCodes
         print("✅ Fetched \(fetchedCodes.count) codes for \(domain)")
       } catch {
+        // Check if task was cancelled before updating error
+        guard !Task.isCancelled else {
+          print("⚠️ Fetch task was cancelled for \(domain)")
+          return
+        }
+        
         errorMessage = error.localizedDescription
         print("❌ Failed to fetch codes: \(error)")
       }
@@ -110,6 +129,10 @@ class DiscountCodeViewModel: ObservableObject {
   }
 
   func clearCodes() {
+    // Cancel any ongoing fetch task
+    fetchTask?.cancel()
+    fetchTask = nil
+    
     codes = []
     errorMessage = nil
     isLoading = false
