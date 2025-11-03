@@ -31,10 +31,6 @@ struct ContentView: View {
               appState.clearDomainFromDeepLink()
               manualDomain = ""
             }
-            .onDisappear {
-              // Clear codes when leaving to prevent stale data on next search
-              viewModel.clearCodes()
-            }
         }
         .onChange(of: appState.domainFromDeepLink) { domain in
           if let domain = domain {

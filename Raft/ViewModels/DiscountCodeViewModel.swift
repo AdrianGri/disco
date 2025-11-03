@@ -43,13 +43,18 @@ class DiscountCodeViewModel: ObservableObject {
     guard !domain.isEmpty else { return }
 
     // Cancel any existing fetch task
-    fetchTask?.cancel()
+    if fetchTask != nil {
+      print("🔄 Cancelling previous fetch task for new request")
+      fetchTask?.cancel()
+    }
 
     // Initialize loading state
     loadingState = .loadingBoth
     isLoading = true
     errorMessage = nil
     codes = []
+    
+    print("🚀 Starting new fetch task for \(domain)")
 
     // Start 1.5-second timer for minimum loading time (skip for premium users)
     let delay = isPremium ? 0.0 : 1.5
@@ -64,7 +69,7 @@ class DiscountCodeViewModel: ObservableObject {
         
         // Check if task was cancelled before updating state
         guard !Task.isCancelled else {
-          print("⚠️ Fetch task was cancelled for \(domain)")
+          print("⚠️ Fetch task was cancelled for \(domain) - not updating state")
           return
         }
         
@@ -73,7 +78,7 @@ class DiscountCodeViewModel: ObservableObject {
       } catch {
         // Check if task was cancelled before updating error
         guard !Task.isCancelled else {
-          print("⚠️ Fetch task was cancelled for \(domain)")
+          print("⚠️ Fetch task was cancelled for \(domain) - not updating error")
           return
         }
         
@@ -81,6 +86,12 @@ class DiscountCodeViewModel: ObservableObject {
         print("❌ Failed to fetch codes: \(error)")
       }
 
+      // Only call handleAPICompleted if task wasn't cancelled
+      guard !Task.isCancelled else {
+        print("⚠️ Fetch task was cancelled for \(domain) - skipping handleAPICompleted")
+        return
+      }
+      
       handleAPICompleted()
     }
   }
@@ -130,8 +141,11 @@ class DiscountCodeViewModel: ObservableObject {
 
   func clearCodes() {
     // Cancel any ongoing fetch task
-    fetchTask?.cancel()
-    fetchTask = nil
+    if fetchTask != nil {
+      print("🧹 Clearing codes and cancelling fetch task")
+      fetchTask?.cancel()
+      fetchTask = nil
+    }
     
     codes = []
     errorMessage = nil
