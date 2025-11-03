@@ -10,7 +10,7 @@ import Foundation
 class DiscountCodeService {
   static let shared = DiscountCodeService()
 
-  private let baseURL = "https://disco-backend.vercel.app/codes-detailed"
+  private let baseURL = "https://disco-backend.vercel.app/codes-detailed-chatgpt"
 
   private init() {}
 
